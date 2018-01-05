@@ -53,3 +53,7 @@ plugins/mysql
 
 # Wth this is here?
 sys_error.txt
+
+#T-Max: ignore docs.
+docs/doxygen
+docs/CoD4x_Server.wiki

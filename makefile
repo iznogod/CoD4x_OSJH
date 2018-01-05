@@ -124,3 +124,8 @@ clean_%: $(SRCMOD_DIR)/%
 clean: $(addprefix clean_,$(MODULES))
 
 clean_all: $(addprefix clean_,$(MODULES) $(EXT_MODULES))
+
+# Do not use until toolchain described
+#docs: FORCE
+#	doxygen doxyconfig
+#	moxygen -o docs/CoD4x_Server.wiki/Plugin-API.md docs/doxygen/xml
