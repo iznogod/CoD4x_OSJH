@@ -2,16 +2,10 @@
 // cmds.h - declarations for plugin handler console commands.
 ///////////////////////////////////////////////////////////////////////////////
 #pragma once
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "macro.hpp"
+BEGIN_C_INCLUDE
 ///////////////////////////////////////////////////////////////////////////////
 // Adds plugin handler console commands.
 void __cdecl SV_AddPluginHandlerConsoleCommands();
 
-#ifdef __cplusplus
-}
-#endif
-
+END_C_INCLUDE

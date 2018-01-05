@@ -35,7 +35,8 @@ BIN_DIR=bin
 LIB_DIR=lib
 OBJ_DIR=obj
 PLUGINS_DIR=plugins
-MODULES := core mbedtls tomcrypt versioning xassets zlib phandler
+MODULES := core versioning xassets phandler
+EXT_MODULES := mbedtls tomcrypt zlib
 
 ##############################
 # Setup external applications.
@@ -78,7 +79,7 @@ C_SOURCES=$(wildcard $(SRC_DIR)/*.c)
 
 ###############################################################################
 # Modules prerequesites.
-MODULES_TARGETPATH = $(addprefix module_,$(MODULES))
+MODULES_TARGETPATH = $(addprefix module_,$(MODULES) $(EXT_MODULES))
 
 #############################################################
 #############################################################
@@ -122,5 +123,4 @@ clean_%: $(SRCMOD_DIR)/%
 
 clean: $(addprefix clean_,$(MODULES))
 
-#TODO
-clean_all: 
+clean_all: $(addprefix clean_,$(MODULES) $(EXT_MODULES))

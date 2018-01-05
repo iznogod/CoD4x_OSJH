@@ -3,7 +3,7 @@
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 CC := g++
-CFLAGS := -m32 -Wall -march=native -std=c++11 -I.. -I../core
+CFLAGS := -m32 -Wall -march=native -std=c++11 -I..
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g3 -O0
@@ -35,12 +35,12 @@ else
 	@rm -f $(OBJDIR)/*.o
 endif
 
-$(OBJDIR)/%.c.o: %.c
+$(OBJDIR)/%.c.o: %.c %.h
 	@echo   $(CC)  $<
 	@$(call makedir,$@)
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.cpp.o: %.cpp
+$(OBJDIR)/%.cpp.o: %.cpp %.hpp
 	@echo   $(CC)  $<
 	@$(call makedir,$@)
 	@$(CC) $(CFLAGS) -o $@ -c $<

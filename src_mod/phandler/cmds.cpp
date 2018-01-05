@@ -4,16 +4,10 @@
 #include "cmds.hpp"
 #include "PluginHandler.hpp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <cmd.h>
-#include <qcommon.h>
-
-#ifdef __cplusplus
-}
-#endif
+BEGIN_C_INCLUDE
+#include <core/cmd.h>
+#include <core/qcommon.h>
+END_C_INCLUDE
 
 
 // Return from console command callback if args count not equal (num).

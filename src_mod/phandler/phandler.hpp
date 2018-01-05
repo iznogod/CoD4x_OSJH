@@ -3,14 +3,9 @@
 //      Allows you to call plugin handler C++ code from C code.
 ///////////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "macro.hpp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+BEGIN_C_INCLUDE
 __cdecl void PHandler_Init();
 __cdecl void PHandler_Shutdown();
-
-#ifdef __cplusplus
-}
-#endif
+END_C_INCLUDE

@@ -1,17 +1,11 @@
-#include "Plugin.h"
+#include "Plugin.hpp"
 #include "events.h"
 #include "dispatcher.hpp"
 #include <algorithm>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <qcommon.h>
-
-#ifdef __cplusplus
-}
-#endif
+BEGIN_C_INCLUDE
+#include <core/qcommon.h>
+END_C_INCLUDE
 
 using namespace std;
 

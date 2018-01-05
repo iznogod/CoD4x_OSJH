@@ -1,16 +1,11 @@
 #include "PluginHandler.hpp"
 #include <plugin/shared.h>
+#include "macro.hpp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <qcommon.h>
-#include <sec_crypto.h>
-
-#ifdef __cplusplus
-}
-#endif
+BEGIN_C_INCLUDE
+#include <core/qcommon.h>
+#include <core/sec_crypto.h>
+END_C_INCLUDE
 
 using namespace std;
 
