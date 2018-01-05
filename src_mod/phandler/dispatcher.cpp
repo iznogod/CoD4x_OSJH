@@ -1,11 +1,11 @@
 #include "dispatcher.hpp"
 #include "macro.hpp"
 
-BEGIN_C_INCLUDE
+BEGIN_EXTERN_C
 #include <core/qcommon_io.h>
 #include <core/cmd.h>
 #include <core/server.h>
-END_C_INCLUDE
+END_EXTERN_C
 
 #define VARG(num, type) ((type)(((int*)&Code_)[1 + num]))
 

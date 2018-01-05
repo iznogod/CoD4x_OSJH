@@ -1,7 +1,14 @@
 #pragma once
 
-#define BEGIN_C_INCLUDE extern "C" {
-#define END_C_INCLUDE }
+#undef BEGIN_EXTERN_C
+#undef END_EXTERN_C
+#ifdef __cplusplus
+    #define BEGIN_EXTERN_C extern "C" {
+    #define END_EXTERN_C }
+#else
+    #define BEGIN_EXTERN_C
+    #define END_EXTERN_C
+#endif
 
 #ifndef FUNCTION_NAME
 #ifdef WIN32   //WINDOWS

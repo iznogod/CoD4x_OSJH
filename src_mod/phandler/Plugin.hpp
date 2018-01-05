@@ -6,9 +6,9 @@
 #include "events.h"
 #include "macro.hpp"
 
-BEGIN_C_INCLUDE
+BEGIN_EXTERN_C
 #include <core/sys_main.h>
-END_C_INCLUDE
+END_EXTERN_C
 
 namespace phandler
 {

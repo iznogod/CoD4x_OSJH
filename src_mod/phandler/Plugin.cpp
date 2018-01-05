@@ -3,9 +3,9 @@
 #include "dispatcher.hpp"
 #include <algorithm>
 
-BEGIN_C_INCLUDE
+BEGIN_EXTERN_C
 #include <core/qcommon.h>
-END_C_INCLUDE
+END_EXTERN_C
 
 using namespace std;
 

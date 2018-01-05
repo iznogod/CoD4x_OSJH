@@ -4,10 +4,10 @@
 #include "cmds.hpp"
 #include "PluginHandler.hpp"
 
-BEGIN_C_INCLUDE
+BEGIN_EXTERN_C
 #include <core/cmd.h>
 #include <core/qcommon.h>
-END_C_INCLUDE
+END_EXTERN_C
 
 
 // Return from console command callback if args count not equal (num).

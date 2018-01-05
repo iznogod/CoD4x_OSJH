@@ -5,7 +5,7 @@
 #pragma once
 #include "macro.hpp"
 
-BEGIN_C_INCLUDE
+BEGIN_EXTERN_C
 __cdecl void PHandler_Init();
 __cdecl void PHandler_Shutdown();
-END_C_INCLUDE
+END_EXTERN_C

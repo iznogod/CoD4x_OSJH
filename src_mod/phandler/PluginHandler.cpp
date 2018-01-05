@@ -2,10 +2,10 @@
 #include <plugin/shared.h>
 #include "macro.hpp"
 
-BEGIN_C_INCLUDE
+BEGIN_EXTERN_C
 #include <core/qcommon.h>
 #include <core/sec_crypto.h>
-END_C_INCLUDE
+END_EXTERN_C
 
 using namespace std;
 
