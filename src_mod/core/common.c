@@ -54,7 +54,7 @@
 #include "sec_update.h"
 #include "allhooks.h"
 #include "misc.h"
-#include <phandler/phandler.h>
+#include <phandler/phandler.hpp>
 
 #include <string.h>
 #include <setjmp.h>

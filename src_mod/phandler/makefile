@@ -3,7 +3,7 @@
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 CC := g++
-CFLAGS := -m32 -Wall -march=native -std=c++11 -I..
+CFLAGS := -m32 -Wall -march=native -std=c++14 -I..
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g3 -O0

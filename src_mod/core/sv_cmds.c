@@ -47,7 +47,7 @@ These commands can only be entered from stdin or by a remote operator datagram
 #include "sys_main.h"
 #include "sapi.h"
 #include "allhooks.h"
-#include <phandler/phandler.h>
+#include <phandler/phandler.hpp>
 
 #include <string.h>
 #include <stdlib.h>
