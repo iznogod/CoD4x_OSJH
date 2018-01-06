@@ -8,6 +8,7 @@ BEGIN_EXTERN_C
 #include <core/qcommon_mem.h>
 #include <core/cmd.h>
 #include <core/server.h>
+#include <core/scr_vm_types.h>
 END_EXTERN_C
 
 using namespace phandler;
@@ -111,7 +112,46 @@ void SysCallDispatcher(const unsigned int CodeHash_, ...)
 
             break;
         }
+
+        case CRC32("Cmd_Argc"):
+        {
+            int* pArgc = VARG(0, int*);
+            *pArgc = Cmd_Argc();
+            break;
+        }
+
+        case CRC32("Cmd_Argv"):
+        {
+            const char** pChar = VARG(1, const char**);
+            *pChar = Cmd_Argv(VARG(0, int));
+            break;
+        }
+
+        case CRC32("Cmd_Args"):
+        {
+            Cmd_Args(VARG(0, char*), VARG(1, int));
+            break;
+        }
+
+        case CRC32("Cmd_AddCommand"):
+        {
+            // TODO: xfunction_t to lambda. Inside lambda - set current plugin.
+            Cmd_AddPCommand(VARG(0, const char*), VARG(1, xfunction_t), VARG(2, int));
+            GetPluginHandler()->CurrentPlugin()->SaveConsoleCommand(VARG(0, const char* const));
+            break;
+        }
         
+        case CRC32("Cmd_RemoveCommand"):
+        {
+            const char* CmdName = VARG(0, const char*);
+            if (GetPluginHandler()->CurrentPlugin()->IsConsoleCommandExist(CmdName))
+            {
+                Cmd_RemoveCommand(CmdName);
+                GetPluginHandler()->CurrentPlugin()->DeleteConsoleCommand(CmdName);
+            }
+            break;
+        }
+
         default: 
             Com_Error(0, "Unknown system call hash: 0x%X", CodeHash_);
     }

@@ -6,6 +6,7 @@
 
 BEGIN_EXTERN_C
 #include <core/qcommon.h>
+#include <core/cmd.h>
 END_EXTERN_C
 
 using namespace std;
@@ -23,8 +24,7 @@ CPlugin::CPlugin()
 
 CPlugin::~CPlugin()
 {
-    if (m_Initialized)
-        Unload();
+    assert(!m_Initialized && "You have to call Unload() before deleting object");
 }
 
 CPlugin::CPlugin(CPlugin&& From_)
@@ -98,8 +98,9 @@ void CPlugin::Unload()
     }
 
     freeAllocatedMemory();
-    /*removeAllCustomConsoleCommands();
-    closeAllSockets();
+    removeCustomConsoleCommands();
+
+    /*closeAllSockets();
     closeAllFiles();*/
 
     /*
@@ -186,6 +187,39 @@ void CPlugin::DeleteMemoryAddress(void* const Address_)
     }
 
     m_mapMemAllocs.erase(Address_);
+}
+
+void CPlugin::SaveConsoleCommand(const char* const CmdName_)
+{
+    for (const auto& strCmd : m_vConsoleCommands)
+        if (strCmd == CmdName_)
+        {
+            assert(!"Self-check: Command already added");
+            return;
+        }
+
+    m_vConsoleCommands.push_back(string(CmdName_));
+}
+
+bool CPlugin::IsConsoleCommandExist(const char* const CmdName_)
+{
+    for (const auto& strCmd : m_vConsoleCommands)
+        if (strCmd == CmdName_)
+            return true;
+    return false;
+}
+
+void CPlugin::DeleteConsoleCommand(const char* const CmdName_)
+{
+    for (auto it = m_vConsoleCommands.begin(), end = m_vConsoleCommands.end(); it != end; ++it)
+    {
+        if (*it == CmdName_)
+        {
+            m_vConsoleCommands.erase(it);
+            return;
+        }
+    }
+    assert(!"Self-check: Command not exist in this plugin");
 }
 
 #if 0
@@ -433,14 +467,15 @@ void CPlugin::freeAllocatedMemory()
     m_mapMemAllocs.clear();
 }
 
-#if 0
-void CPlugin::removeAllCustomConsoleCommands()
+void CPlugin::removeCustomConsoleCommands()
 {
-    /*for (auto& conCmd : m_CustomCmds)
-        RemoveConsoleCommand(conCmd.c_str());
-    m_CustomCmds.clear();*/
+    for (const auto& conCmd : m_vConsoleCommands)
+        Cmd_RemoveCommand(conCmd.c_str());
+
+    m_vConsoleCommands.clear();
 }
 
+#if 0
 void CPlugin::closeAllSockets()
 {
     /*for (auto& it : m_Sockets)

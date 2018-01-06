@@ -12,6 +12,7 @@
 
 BEGIN_EXTERN_C
 #include <core/sys_net_types.h>
+#include <core/scr_vm_types.h>
 END_EXTERN_C
 
 /**
@@ -204,4 +205,62 @@ inline void trap_MemFree(const void* const Address_)
 {
     constexpr unsigned int hash = CRC32("MemFree");
     syscall(hash, Address_);
+}
+
+/**
+ * \brief Get count of arguments passed to a console command.
+ * \return Count of args as unsigned integer.
+ * */
+inline unsigned int trap_Cmd_Argc()
+{
+    unsigned int argc = 0;
+    constexpr unsigned int hash = CRC32("Cmd_Argc");
+    syscall(hash, &argc);
+    return argc;
+}
+
+/**
+ * \brief Get argument of console command.
+ * \param[in] ArgNum_ - number of an argument, started from 0.
+ * \
+ * */
+inline const char* trap_Cmd_Argv(const unsigned int ArgNum_)
+{
+    const char* argv = "";
+    constexpr unsigned int hash = CRC32("Cmd_Argv");
+    syscall(hash, ArgNum_, &argv);
+    return argv;
+}
+
+/**
+ * \brief Retrieve all passed arguments to a console command and save it to buffer.
+ * \param[out] pBuffer_ - A storage for arguments.
+ * \param[in] Size_ - Size of storage in bytes.
+ * */
+inline void trap_Cmd_Args(char* pBuffer_, const unsigned int Size_)
+{
+    constexpr unsigned int hash = CRC32("Cmd_Args");
+    syscall(hash, pBuffer_, Size_);
+}
+
+/**
+ * \brief Add new console command.
+ * \param[in] CmdName_ - Name of console command.
+ * \param[in] Function_ - Callback to be invoked when command issued.
+ * \param[in] Power_ - Required minimum power of player to be able to invoke command.
+ * */
+inline void trap_Cmd_AddCommand(const char* const CmdName_, xfunction_t Function_, const unsigned int Power_ = 0)
+{
+    constexpr unsigned int hash = CRC32("Cmd_AddCommand");
+    syscall(hash, CmdName_, Function_, Power_);
+}
+
+/**
+ * \brief Remove previously added console command.
+ * \param[in] CmdName_ - Name of console command.
+ * */
+inline void trap_Cmd_RemoveCommand(const char* const CmdName_)
+{
+    constexpr unsigned int hash = CRC32("Cmd_RemoveCommand");
+    syscall(hash, CmdName_);
 }

@@ -45,14 +45,6 @@ public:
     // Sets current plugin enabled state.
     void SetInitialized(bool bInitialized_);
 
-    /////////////////////////////////////////////
-    // Add address to memory allocations storage.
-    void SaveMemoryAddress(void* const Address_, const unsigned int Size_);
-
-    //////////////////////////////////////////////////
-    // Remove address from memory allocations storage.
-    void DeleteMemoryAddress(void* const Address_);
-
     /////////////////////
     // Fire plugin event.
     template <class... PTypes>
@@ -65,13 +57,35 @@ public:
         return true;
     }
 
+    /////////////////////////////////////////////
+    // Add address to memory allocations storage.
+    void SaveMemoryAddress(void* const Address_, const unsigned int Size_);
+
+    //////////////////////////////////////////////////
+    // Remove address from memory allocations storage.
+    void DeleteMemoryAddress(void* const Address_);
+
+    //////////////////////////////////////////
+    // Add name of console command to storage.
+    void SaveConsoleCommand(const char* const CmdName_);
+
+    /////////////////////////////////////////
+    // Returns true if console command exist.
+    bool IsConsoleCommandExist(const char* const CmdName_);
+
+    ///////////////////////////////////////////////
+    // Remove name of console command from storage.
+    void DeleteConsoleCommand(const char* const CmdName_);
+
 private:
 
     void freeAllocatedMemory();
+    void removeCustomConsoleCommands();
 
     libHandle_t m_LibHandle;                        // Handle of a plugin library.
     TSysCall m_pEventDispatcher;                    // Plugin event dispatcher returned by "pluginEntry".
     std::map<void*, unsigned int> m_mapMemAllocs;   // Memory allocations <address, size of block>.
+    std::vector<std::string> m_vConsoleCommands;    // Custom console commands names.
 
     ////////////////////////////////////////////////////////////////////
     // If set to true, plugin successfully loaded and initialized.

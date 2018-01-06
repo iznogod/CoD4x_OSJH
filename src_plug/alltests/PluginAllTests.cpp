@@ -14,6 +14,12 @@ void CPluginAllTests::OnInfoRequest(SPluginInfo_t* pPluginInfo_)
     strcpy(pPluginInfo_->longDescription, "This plugin contains all the test functionality you can use to reference or watch how it's working");
 }
 
+
+__cdecl void onTestConsoleCommand()
+{
+    trap_Com_Printf("[alltests]: Test console command executed\n");
+}
+
 EPluginLoadingResult CPluginAllTests::OnPluginLoad()
 {
     trap_Com_Printf("[alltests]: Hello, %s world!\n", "formatted");
@@ -25,15 +31,17 @@ EPluginLoadingResult CPluginAllTests::OnPluginLoad()
     char buffer[8192] = {'\0'};
     trap_SV_GetConfigString(1000, buffer, sizeof(buffer));
     trap_Com_Printf("[alltests]: SV_GetConfigString(): CS len is %d CS is: %s\n", strlen(buffer), buffer);
-    trap_SV_SetStat(0, 0, 800);
-    int ret = trap_SV_GetStat(0, 0);
-    trap_Com_Printf("[alltests]: SV_GetStat(): %d \n", ret);
+    //trap_SV_SetStat(0, 0, 800);
+    //int ret = trap_SV_GetStat(0, 0);
+    //trap_Com_Printf("[alltests]: SV_GetStat(): %d \n", ret);
     //trap_RemoveBanByIP(&remote);
     //trap_AddBanByIP(&request->remote, "Invalid login attempt. You have to wait 20 seconds", 20);
     //trap_Com_Error("[alltests]: Com_Error(): Test Com_Error %d\n", 2);
     void* pMem = trap_MemAlloc(16);
-    trap_Com_Printf("[alltests]: MemAlloc(): 16 bytes for 0x%X", pMem);
+    trap_Com_Printf("[alltests]: MemAlloc(): 16 bytes for 0x%X\n", pMem);
     trap_MemFree(pMem);
+
+    trap_Cmd_AddCommand("testconsolecommand", onTestConsoleCommand);
     
     return PLR_OK;
 }
@@ -41,4 +49,5 @@ EPluginLoadingResult CPluginAllTests::OnPluginLoad()
 void CPluginAllTests::OnPluginUnload()
 {
      trap_Com_Printf("[alltests]: Goodbye, cruel world!\n");
+     trap_Cmd_RemoveCommand("testconsolecommand");
 }

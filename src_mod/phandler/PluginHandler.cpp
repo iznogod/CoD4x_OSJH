@@ -119,7 +119,9 @@ void CPluginHandler::UnloadPlugin(const char* LibName_)
         Com_Printf("Plugin '%s' is not loaded\n", LibName_);
         return;
     }
-
+    m_CurrentPlugin = &plugin->second; // Because Unload() can invoke trap_* functions.
+    plugin->second.Unload();
+    m_CurrentPlugin = nullptr;
     m_Plugins.erase(plugin);
     Com_Printf("Plugin '%s' has been unloaded\n", LibName_); // Newline because of possible plugin print.
 }
