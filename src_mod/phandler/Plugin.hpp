@@ -3,11 +3,11 @@
 #include <list>
 #include <map>
 #include <vector>
-#include "events.h"
 #include "macro.hpp"
 
 BEGIN_EXTERN_C
 #include <core/sys_main.h>
+#include <plugin/shared.h>
 END_EXTERN_C
 
 namespace phandler
@@ -39,37 +39,43 @@ public:
 
     //////////////////////////////////////////
     // Returns true if current plugin initialized.
-    bool IsInitialized() const { return m_Initialized; }
+    bool IsInitialized() const;
     
     /////////////////////////////////////
     // Sets current plugin enabled state.
-    void SetInitialized(bool State_) { m_Initialized = State_; }
+    void SetInitialized(bool bInitialized_);
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Returns string representation of an event number.
-    const char* const GetEventName(const EPluginEvent EventIdx_) const;
+    /////////////////////////////////////////////
+    // Add address to memory allocations storage.
+    void SaveMemoryAddress(void* const Address_, const unsigned int Size_);
+
+    //////////////////////////////////////////////////
+    // Remove address from memory allocations storage.
+    void DeleteMemoryAddress(void* const Address_);
 
     /////////////////////
     // Fire plugin event.
     template <class... PTypes>
-    bool Event(EPluginEvent Event_, PTypes... Params)
+    bool Event(const unsigned int EventHashCode_, PTypes... Params)
     {
-        int idx = static_cast<int>(Event_);
-        if (!m_Events[idx])
+        if (!m_pEventDispatcher)
             return false;
-
-        (reinterpret_cast<void(__cdecl *)(PTypes...)>(m_Events[idx]))(Params...);
+        
+        m_pEventDispatcher(EventHashCode_, Params...);
         return true;
     }
 
 private:
 
-    void (*m_Events[PEV_Count]);
-    libHandle_t m_LibHandle;
+    void freeAllocatedMemory();
+
+    libHandle_t m_LibHandle;                        // Handle of a plugin library.
+    TSysCall m_pEventDispatcher;                    // Plugin event dispatcher returned by "pluginEntry".
+    std::map<void*, unsigned int> m_mapMemAllocs;   // Memory allocations <address, size of block>.
 
     ////////////////////////////////////////////////////////////////////
     // If set to true, plugin successfully loaded and initialized.
-    // Must not be set to "true" inside this class.
+    // Must not be set to "true" inside this class. (depends on dll info, returned by event)
     // When unloading, if set to "true" - must fire "OnTerminate" first.
     bool m_Initialized;
 };

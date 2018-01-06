@@ -1,6 +1,7 @@
 #include "PluginHandler.hpp"
 #include <plugin/shared.h>
 #include "macro.hpp"
+#include <compiletime/ctcrc32.hpp>
 
 BEGIN_EXTERN_C
 #include <core/qcommon.h>
@@ -62,16 +63,20 @@ void CPluginHandler::LoadPlugin(const char* LibName_)
     }
 
     // Begin loading new plugin.
-    m_Plugins.emplace(pluginName, CPlugin());
+    m_Plugins.emplace(pluginName, CPlugin()); // Plugin is not copyable. That's why I have to create it here.
     CPlugin& plugin = m_Plugins[pluginName];
     if (!plugin.LoadFromFile(pluginPath))
+    {
+        m_Plugins.erase(pluginName);
         return;
+    }
 
     Com_DPrintf("Fetching plugin information\n");
     SPluginInfo_t info;
-    if (!plugin.Event(eOnInfoRequest, &info))
+    constexpr auto hashOnInfoRequest = CRC32("OnInfoRequest");
+    if (!plugin.Event(hashOnInfoRequest, &info))
     {
-        Com_PrintError("Plugin event callback '%s' not found\n", plugin.GetEventName(eOnInfoRequest));
+        Com_PrintError("Plugin event dispatcher not found\n");
         m_Plugins.erase(pluginName);
         return;
     }
@@ -80,13 +85,16 @@ void CPluginHandler::LoadPlugin(const char* LibName_)
 
     Com_DPrintf("Initializing plugin\n");
     EPluginLoadingResult success = PLR_FAILED;
-    if (!plugin.Event(eOnPluginLoad, &success))
+    m_CurrentPlugin = &plugin; // Because during event it can invoke some functions that can change plugin's fields.
+
+    constexpr auto hashOnPluginLoad = CRC32("OnPluginLoad");
+    if (!plugin.Event(hashOnPluginLoad, &success))
     {
-        Com_PrintError("Error: plugin function '%s' not found\n", plugin.GetEventName(eOnPluginLoad));
+        Com_PrintError("Plugin event dispatcher not found\n");
         m_Plugins.erase(pluginName);
         return;
     }
-    //m_CurrentPlugin = nullptr;
+    m_CurrentPlugin = nullptr;
 
     if (success != PLR_OK)
     {
@@ -149,6 +157,11 @@ void CPluginHandler::PrintPluginsSummary()
         Com_Printf("| %-21s| %-9s| %-19d| %-21d|\n", itPlugin.first.c_str(), "yes", /*plugin.GetMemAllocs()*/ 0, /*plugin.GetMemAllocsSize()*/ 0);
     }
     Com_Printf("+----------------------+----------+--------------------+----------------------+\n");
+}
+
+CPlugin* CPluginHandler::CurrentPlugin() const
+{
+    return m_CurrentPlugin;
 }
 
 /*void CPluginHandler::PluginError(EPluginError_t Code_, const char* const Message_)

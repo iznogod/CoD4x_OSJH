@@ -1,23 +1,37 @@
 #pragma once
 #include "shared.h"
-///////////////////////////////////////////////////////////////////////////////
-// events.h - declaration of exported from plugin functions.
-//      Any event once added must exist in all the future versions.
+/**
+ * \brief   Base plugin implementation interface. 
+ *          This interface is used by EventDispatcher in each plugin code.
+ *          It declares all the events available to use in plugin.
+ *          Do not forget to add implementation in \a CBasePluginImpl
+ * */
+class IBasePluginImpl
+{
+public:
+    virtual ~IBasePluginImpl() {};
 
-///////////////////////////////////////////////////////////////////////////////
-// Fires when plugin gets loaded.
-// pResult_ must be set to PLR_OK if plugin properly loaded.
-DECL_IN_DLL void OnPluginLoad(EPluginLoadingResult* pResult_);
+    /**
+     * \brief Server requested plugin information.
+     * \param[out] pPluginInfo_ - struct contains all the plugin information.
+     * */
+    virtual void OnInfoRequest(SPluginInfo_t* pPluginInfo_) = 0;
 
-///////////////////////////////////////////////////////////////////////////////
-// Fires when plugin gets unloaded.
-DECL_IN_DLL void OnPluginUnload();
+    /**
+     * \brief Server attempted to load this plugin.
+     * \return \a PLR_OK if everything is OK, \a PLR_FAILED if something went wrong.
+     * \note Make all the global-time memory allocations here.
+     * */
+    virtual EPluginLoadingResult OnPluginLoad() = 0;
 
-///////////////////////////////////////////////////////////////////////////////
-// Fires when server requests plugin info.
-DECL_IN_DLL void OnInfoRequest(SPluginInfo_t* pPluginInfo_);
+    /**
+     * \brief Server initiated plugin unloading.
+     * \note Free all used resources here - this plugin is not going to be used anymore.
+     * */
+    virtual void OnPluginUnload() = 0;
+};
 
-/*
+/* to be used later.
 DECL_IN_DLL void OnInit();
 DECL_IN_DLL void OnUnload();
 DECL_IN_DLL void OnPlayerDisconnect();

@@ -1,7 +1,6 @@
 #pragma once
 #include <map>
 #include <string>
-#include "events.h"
 #include "Plugin.hpp"
 
 namespace phandler
@@ -52,21 +51,19 @@ public:
     /////////////////////
     // Fire plugin event.
     template <class... TParms>
-    void Event(EPluginEvent Event_, TParms... Params)
+    void Event(const unsigned int EventHashCode_, TParms... Params)
     {
-        /*if (Event_ < PEV_Start || Event_ >= PEV_Count)
-        {
-            Com_PrintError("Unknown plugin event");
-            return;
-        }
-
         for (auto &plugin : m_Plugins)
         {
             m_CurrentPlugin = &plugin.second;
-            m_CurrentPlugin->Event(Event_, Params...);
+            m_CurrentPlugin->Event(EventHashCode_, Params...);
         }
-        m_CurrentPlugin = nullptr;*/
+        m_CurrentPlugin = nullptr;
     }
+    
+    /////////////////////////
+    // Return current plugin.
+    CPlugin* CurrentPlugin() const;
 
   private:
     ////////////////////////////////////////////////////////////////

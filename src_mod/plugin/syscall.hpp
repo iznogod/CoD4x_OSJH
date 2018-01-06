@@ -2,7 +2,7 @@
 #include "shared.h"
 
 // Static function to declare syscall storage variable.
-inline static TSysCall* getPSysCall()
+inline TSysCall* getPSysCall()
 {
     static TSysCall g_sysCall;
     return &g_sysCall;

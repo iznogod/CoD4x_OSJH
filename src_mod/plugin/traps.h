@@ -4,11 +4,15 @@
 //      You can change inner code. Do not delete functions - old plugins may rely on these.
 #pragma once
 
-#include "../core/server.h"
-#include "base.h"
+#include "syscall.hpp"
 #include <cstdio>
 #include <cstdarg>
 #include <compiletime/ctcrc32.hpp>
+#include <phandler/macro.hpp>
+
+BEGIN_EXTERN_C
+#include <core/sys_net_types.h>
+END_EXTERN_C
 
 /**
  * \brief Print message to a console window.
@@ -24,7 +28,8 @@ inline void trap_Com_Printf(const char* const Format_, ...)
     va_end(ap);
 
     constexpr unsigned int hash = CRC32("Com_Printf");
-    syscall(hash, msg);
+    TSysCall* pSysCall = getPSysCall();
+    (*pSysCall)(hash, msg);
 }
 
 /**
@@ -176,4 +181,27 @@ inline void trap_AddBanByIP(const netadr_t* const Client_, const char* Message_,
 {
     constexpr unsigned int hash = CRC32("AddBanByIP");
     syscall(hash, Client_, Message_, Expire_);
+}
+
+/**
+ * \brief Allocate RAM.
+ * \param[in] Size_ - Desired size of memory block.
+ * \return Address of allocated memory or \a nullptr in case of failure.
+ * */
+inline void* trap_MemAlloc(const unsigned int Size_)
+{
+    void* result = nullptr;
+    constexpr unsigned int hash = CRC32("MemAlloc");
+    syscall(hash, Size_, &result);
+    return result;
+}
+
+/**
+ * \brief Free RAM.
+ * \param[in] Address_ - Address of previously allocated block of memory.
+ * */
+inline void trap_MemFree(const void* const Address_)
+{
+    constexpr unsigned int hash = CRC32("MemFree");
+    syscall(hash, Address_);
 }

@@ -1,7 +1,8 @@
 #include "Plugin.hpp"
-#include "events.h"
 #include "dispatcher.hpp"
 #include <algorithm>
+#include <cassert>
+#include <compiletime/ctcrc32.hpp>
 
 BEGIN_EXTERN_C
 #include <core/qcommon.h>
@@ -12,58 +13,10 @@ using namespace std;
 namespace phandler
 {
 
-#define EV(event) { e##event, #event }
-
-static struct PluginEventsInfo_t
-{
-    EPluginEvent EventIdx;
-    const char* CallbackName;
-} g_PluginEventsInfo[PEV_Count] = {
-    EV(OnPluginLoad),
-    EV(OnPluginUnload),
-    EV(OnInfoRequest)
-    /*EV(OnPlayerDisconnect),
-    EV(OnPlayerConnect),
-    EV(OnExitLevel),
-    EV(OnMessageSent),
-    EV(PerFrame),
-    EV(PerSecond),
-    EV(PerTenSeconds),
-    EV(OnClientAuthorized),
-    EV(OnClientSpawned),
-    EV(OnClientEnteredWorld),
-    EV(OnTCPPacketReceived),
-    EV(OnUDPEvent),
-    EV(OnUDPSent),
-    EV(OnSpawnServer),
-    EV(BeforeFastRestart),
-    EV(AfterFastRestart),
-    EV(OnClientUserInfoChanged),
-    EV(OnClientMove),
-    EV(OnReservedSlotRequested),
-    EV(OnFilesystemStartup),
-    EV(OnPlayerGotAuthInfo),
-    EV(OnBanAdded),
-    EV(OnGetBanStatus),
-    EV(OnBanRemoved),
-    EV(OnModuleLoaded),
-    EV(OnScreenshotArrived),
-    EV(OnTerminate),
-    EV(Script_OnGametypeLoaded),
-    EV(Script_OnLevelLoaded),
-    EV(Script_OnGametypeStarted),
-    EV(Script_OnPlayerConnected),
-    EV(Script_OnPlayerDisconnected),
-    EV(Script_OnPlayerDamage),
-    EV(Script_OnPlayerKilled),
-    EV(Script_OnPlayerLastStand)*/
-};
-
 CPlugin::CPlugin() 
     : m_LibHandle(INVALID_LIB_HANDLE)
+    , m_pEventDispatcher(nullptr)
     , m_Initialized(false)
-    //, m_MemAllocs(0)
-    //, m_AllocatedBytesCount(0)
 {
 
 }
@@ -105,25 +58,16 @@ bool CPlugin::LoadFromFile(const std::string &LibPath_)
     Com_DPrintf("Plugin binary file loaded successfully\n");
 
 
-    Com_DPrintf("Setting up plugin syscall dispatcher\n");
+    Com_DPrintf("Setting up plugin syscall dispatchers\n");
     void* pPluginEntry = Sys_GetProcedure(m_LibHandle, "pluginEntry");
     if (!pPluginEntry)
     {
         Com_PrintError("Error: plugin entry point not found\n");
         return false;
     }
-    ((void(*)(const TSysCall))pPluginEntry)(SysCallDispatcher);
+    m_pEventDispatcher = ((TSysCall(*)(const TSysCall))pPluginEntry)(SysCallDispatcher);
     Com_DPrintf("Syscall dispatcher has been set successfully\n");
 
-    
-    Com_DPrintf("Loading plugin events callbacks:\n");
-    for (int ev = PEV_Start; ev < PEV_Count; ++ev)
-    {
-        const char* const szEventName = GetEventName((EPluginEvent)ev);
-        m_Events[ev] = Sys_GetProcedure(m_LibHandle, szEventName);
-        Com_DPrintf("%s - %s\n", szEventName, m_Events[ev] ? "found" : "not found");
-    }
-    Com_DPrintf("Plugin events loaded\n");
     return true;
 }
 
@@ -148,14 +92,13 @@ void CPlugin::Unload()
     // Let plugin free its stuff.
     if (m_Initialized)
     {
-//        Event(eOnTerminate);
+        constexpr unsigned int hash = CRC32("OnPluginUnload");
+        Event(hash);
         m_Initialized = false;
     }
 
-    Event(eOnPluginUnload);
-
-    /*freeAllocatedMemory();
-    removeAllCustomConsoleCommands();
+    freeAllocatedMemory();
+    /*removeAllCustomConsoleCommands();
     closeAllSockets();
     closeAllFiles();*/
 
@@ -179,7 +122,8 @@ void CPlugin::PrintPluginInfo() // const impossible because of "Event" call
 {
     // We know, plugin has required events.
     SPluginInfo_t info;
-    Event(eOnInfoRequest, &info);
+    constexpr auto hash = CRC32("OnInfoRequest");
+    Event(hash, &info);
 
     //Com_Printf("^2Plugin version:^7\n%d\n\n", ); // TODO: get back
     Com_Printf("^2Full plugin name:^7\n%s\n\n", info.fullName);
@@ -211,6 +155,39 @@ void CPlugin::PrintPluginInfo() // const impossible because of "Event" call
     }
     */
 }
+
+bool CPlugin::IsInitialized() const
+{
+    return m_Initialized;
+}
+
+void CPlugin::SetInitialized(bool bInitialized_)
+{
+    m_Initialized = bInitialized_;
+}
+
+void CPlugin::SaveMemoryAddress(void* const Address_, const unsigned int Size_)
+{
+    if (m_mapMemAllocs.find(Address_) != m_mapMemAllocs.end())
+    {
+        assert(!"Self-check: Address already defined");
+        return;
+    }
+
+    m_mapMemAllocs[Address_] = Size_;
+}
+
+void CPlugin::DeleteMemoryAddress(void* const Address_)
+{
+    if (m_mapMemAllocs.find(Address_) == m_mapMemAllocs.end())
+    {
+        assert(!"Self-check: Address not defined");
+        return;
+    }
+
+    m_mapMemAllocs.erase(Address_);
+}
+
 #if 0
 void* CPlugin::Malloc(size_t Size_)
 {
@@ -444,17 +421,19 @@ void CPlugin::FS_FClose(const fileHandle_t hFile_)
 
     Com_DPrintf("done\n");*/
 }
+#endif
 
 void CPlugin::freeAllocatedMemory()
 {
-    /*for (auto pMem : m_MemStorage)
-        free(pMem);
+    assert(!m_mapMemAllocs.size() && "Plugin-check: not all memory allocations was freed by plugin");
 
-    m_MemStorage.clear();
-    m_MemAllocs = 0;
-    m_AllocatedBytesCount = 0;*/
+    for (const auto& itAddress : m_mapMemAllocs)
+        free(reinterpret_cast<void*>(itAddress.first));
+
+    m_mapMemAllocs.clear();
 }
 
+#if 0
 void CPlugin::removeAllCustomConsoleCommands()
 {
     /*for (auto& conCmd : m_CustomCmds)
@@ -476,12 +455,5 @@ void CPlugin::closeAllFiles()
     m_Files.clear();*/
 }
 #endif
-
-const char* const CPlugin::GetEventName(const EPluginEvent EventIdx_) const
-{
-    if (EventIdx_ < PEV_Start || EventIdx_ >= PEV_Count)
-        return nullptr;
-    return g_PluginEventsInfo[EventIdx_].CallbackName;
-}
 
 } // end of namespace phandler

@@ -6,7 +6,7 @@ PLUGINNAME := alltests
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 CC := g++
-CFLAGS := -m32 -Wall -std=c++14 -I../../src_mod/plugin
+CFLAGS := -m32 -Wall -std=c++14 -I../../src_mod/plugin -I../../src_mod
 # -static-libgcc required to prevent runtime error when server shuts down.
 LFLAGS := -static-libgcc
 
@@ -49,12 +49,12 @@ $(CORETARGETPATH): $(ALLOBJ)
 	@echo   $(CC)  $@
 	@$(CC) -shared $(LFLAGS) -o $@ $^
 
-$(OBJDIR)/%.c.o: %.c %.h
+$(OBJDIR)/%.c.o: %.c
 	@echo   $(CC)  $<
 	@$(call makedir,$@)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.cpp.o: %.cpp %.hpp
+$(OBJDIR)/%.cpp.o: %.cpp
 	@echo   $(CC)  $<
 	@$(call makedir,$@)
 	$(CC) $(CFLAGS) -o $@ -c $<
