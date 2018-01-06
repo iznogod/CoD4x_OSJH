@@ -108,9 +108,9 @@ module_%: $(SRCMOD_DIR)/%
 version_make_progress: FORCE
 	@echo   sh  $@
 ifeq ($(OS),Windows_NT)
-	@cmd.exe /C "cd /d $(SRC_DIR)/version && @version_make_progress.cmd"
+	@cmd.exe /C "cd /d tools/version && @version_make_progress.cmd"
 else
-	cd "$(SRC_DIR)/version/" && chmod +x version_make_progress.sh && ./version_make_progress.sh
+	cd "tools/version/" && chmod +x version_make_progress.sh && ./version_make_progress.sh
 endif
 
 ###############################
