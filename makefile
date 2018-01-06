@@ -89,7 +89,8 @@ MODULES_TARGETPATH = $(addprefix module_,$(MODULES) $(EXT_MODULES))
 
 ###############################
 # Default rule: rebuild server.
-all: notify $(TARGET) $(ADDITIONAL_OBJ) $(SECURITY)
+all: notify version_make_progress $(TARGET) $(ADDITIONAL_OBJ) $(SECURITY)
+	@echo Server done
 
 notify:
 	@echo === Building CoD4X Server ===
@@ -101,6 +102,16 @@ FORCE:
 module_%: $(SRCMOD_DIR)/%
 	@echo  === $< ===
 	@$(MAKE) -s -C $< DEBUG=$(DEBUG)
+
+##################################
+# Increase version number
+version_make_progress: FORCE
+	@echo   sh  $@
+ifeq ($(OS),Windows_NT)
+	@cmd.exe /C "cd /d $(SRC_DIR)/version && @version_make_progress.cmd"
+else
+	cd "$(SRC_DIR)/version/" && chmod +x version_make_progress.sh && ./version_make_progress.sh
+endif
 
 ###############################
 # A rule to link server binary.
