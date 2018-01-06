@@ -6,6 +6,6 @@
 #include "macro.hpp"
 
 BEGIN_EXTERN_C
-__cdecl void PHandler_Init();
-__cdecl void PHandler_Shutdown();
+CDECL void PHandler_Init();
+CDECL void PHandler_Shutdown();
 END_EXTERN_C

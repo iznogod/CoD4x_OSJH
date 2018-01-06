@@ -611,7 +611,7 @@ void* Sys_GetProcedure(libHandle_t hModule_, const char* ProcName_)
         return NULL;
     }
 
-    return dlsym(hRealHandle, lpProcName);
+    return dlsym(hRealHandle, ProcName_);
 }
 
 void Sys_CloseLibrary(libHandle_t hModule_)
@@ -619,7 +619,7 @@ void Sys_CloseLibrary(libHandle_t hModule_)
 	if (hModule_ == INVALID_LIB_HANDLE)
     {
         Com_Error(ERR_FATAL, "Sys_CloseLibrary: passed invalid library handle");
-        return;[]
+        return;
     }
 
     void* hRealModule = GetLibraryByHandle(hModule_);

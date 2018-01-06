@@ -636,7 +636,7 @@ undergoes will affect the player. Setting it back to 0 (worldspawn)
 should disable all further effects.
 
 Usage:	self SetGroundReferenceEnt( <other entity id> );
-		self SetGroundReferenceEnt( other GetEntityNumber() );
+        self SetGroundReferenceEnt( other GetEntityNumber() );
 ============
 */
 void PlayerCmd_SetGroundReferenceEnt(scr_entref_t arg)
@@ -683,10 +683,10 @@ void PlayerCmd_SetGroundReferenceEnt(scr_entref_t arg)
     }
 
     /*
-	if( !groundRefEnt->inuse ){
-		Scr_ObjectError(va("SetGroundReferenceEnt: entity %i does not exist", otherEntityNum));
-		return;
-	}
+    if( !groundRefEnt->inuse ){
+        Scr_ObjectError(va("SetGroundReferenceEnt: entity %i does not exist", otherEntityNum));
+        return;
+    }
 */
 
     gentity->s.groundEntityNum = otherEntityNum;
@@ -1892,7 +1892,7 @@ void GScr_FS_InitParamList(){
     char* filename;
     qboolean type;
     int i;
-	mvabuf;
+    mvabuf;
 
     if(Scr_GetNumParam() != 2)
         Scr_Error("FS_InitParamList(string <filename>, bool <indexed_list>)\n");
@@ -2671,41 +2671,41 @@ const char *Scr_GetPlayername(gentity_t *gent)
 void GScr_SpawnVehicle()
 {
 
-	int spawnflags;
-	gentity_t *gentity;
-	vec3_t origin;
-	char vehTypeStr[MAX_QPATH];
-	char vehModel[MAX_QPATH];
+    int spawnflags;
+    gentity_t *gentity;
+    vec3_t origin;
+    char vehTypeStr[MAX_QPATH];
+    char vehModel[MAX_QPATH];
 
-	Scr_GetVector(0, origin);
+    Scr_GetVector(0, origin);
 
-	if ( Scr_GetNumParam() != 4 )
-	{
-		Scr_Error("Usage: spawnvehicle <origin>, <spawnflags>, <vehicletype>, <xmodel>");
-		return;
-	}
+    if ( Scr_GetNumParam() != 4 )
+    {
+        Scr_Error("Usage: spawnvehicle <origin>, <spawnflags>, <vehicletype>, <xmodel>");
+        return;
+    }
 
-	spawnflags = Scr_GetInt(1);
+    spawnflags = Scr_GetInt(1);
 
-	gentity = G_Spawn();
+    gentity = G_Spawn();
 
-	Scr_SetString((unsigned short*)&gentity->classname, (unsigned short)stringIndex.script_vehicle);
+    Scr_SetString((unsigned short*)&gentity->classname, (unsigned short)stringIndex.script_vehicle);
 
-	gentity->r.currentOrigin[0] = origin[0];
-	gentity->r.currentOrigin[1] = origin[1];
-	gentity->r.currentOrigin[2] = origin[2];
+    gentity->r.currentOrigin[0] = origin[0];
+    gentity->r.currentOrigin[1] = origin[1];
+    gentity->r.currentOrigin[2] = origin[2];
 
-	gentity->spawnflags = spawnflags;
+    gentity->spawnflags = spawnflags;
 
         Q_strncpyz(vehTypeStr, Scr_GetString(2), sizeof(vehTypeStr));
         Q_strncpyz(vehModel, Scr_GetString(3), sizeof(vehModel));
 
         G_SetModel(gentity, vehModel);
 //	G_VehCollmapSpawner( gentity );
-	SpawnVehicle( gentity, vehTypeStr );
+    SpawnVehicle( gentity, vehTypeStr );
 //	gentity->s.eType = 12;
 //	gentity->r.contents = 0x2080;
-	Scr_AddEntity( gentity );
+    Scr_AddEntity( gentity );
 }
 */
 
@@ -2765,15 +2765,15 @@ void ScrCmd_SetStance(scr_entref_t arg){
 
     if(strindex == stringIndex.prone){
 
-	gentity->client->ps.stance = 1;
+    gentity->client->ps.stance = 1;
 
     }else if(strindex == stringIndex.crouch){
 
-	gentity->client->ps.stance = 2;
+    gentity->client->ps.stance = 2;
 
     }else if(strindex == stringIndex.stand){
 
-	gentity->client->ps.stance = 3;
+    gentity->client->ps.stance = 3;
 
     }else{
 
@@ -3159,38 +3159,36 @@ qboolean GetTagInfoForEntity(gentity_t *ent, int partNameIdx, DObjPartCache_t *c
 
 void PlayerCmd_GetSpectatorClient(scr_entref_t arg)
 {
-    gentity_t *gentity;
-    int entityNum = 0;		
-    mvabuf;		
-		
-    if (HIWORD(arg))		
-    {		
-        Scr_ObjectError("Not an entity");		
-    }		
-    else		
-    {		
-        entityNum = LOWORD(arg);		
-        gentity = &g_entities[entityNum];		
-		
-        if (!gentity->client)		
-        {		
-            Scr_ObjectError(va("Entity: %i is not a player", entityNum));		
-        }		
-    }		
-    if (Scr_GetNumParam())		
-    {		
-        Scr_Error("Usage: self getSpectatorClient()\n");		
-    }		
-		
-    // Player isn't spectating anyone.		
-    if (gentity->client->spectatorClient == -1)		
-    {		
-        Scr_AddUndefined();		
-    }		
-    else		
-    {		
-        Scr_AddEntity(&g_entities[gentity->client->spectatorClient]);		
-    }		
+    gentity_t *gentity = NULL;
+    int entityNum = 0;
+    mvabuf;
+
+    if (Scr_GetNumParam())
+    {
+        Scr_Error("Usage: self getSpectatorClient()\n");
+        return;
+    }
+    
+    if (HIWORD(arg))
+    {
+        Scr_ObjectError("Not an entity");
+        return;
+    }
+
+    entityNum = LOWORD(arg);
+    gentity = &g_entities[entityNum];
+            
+    if (!gentity->client)
+    {
+        Scr_ObjectError(va("Entity: %i is not a player", entityNum));
+        return;
+    }
+    
+    // Player isn't spectating anyone.
+    if (gentity->client->spectatorClient == -1)
+        Scr_AddUndefined();
+    else
+        Scr_AddEntity(&g_entities[gentity->client->spectatorClient]);
 }
 
 void PlayerCmd_SetVelocity(scr_entref_t arg)

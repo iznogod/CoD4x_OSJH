@@ -902,13 +902,13 @@ qboolean HStorage_ParseLine(varStorage_t *vobj, char *line, int linenumber)
 {
     int i, count, outlen;
     varType_t varType;
-    char *varValue;
+    char *varValue = 0;
     vsMemObj_t *newobj;
     vsMemObj_t *obj = vobj->memObj;
     char queryString[32];
     char varname[32];
     char outbuf[8192];
-    qboolean suc;
+    qboolean suc = qfalse;
 
     varType = HStorage_VarTypeToEnum(Info_ValueForKey(line, "type"));
 
@@ -958,8 +958,9 @@ qboolean HStorage_ParseLine(varStorage_t *vobj, char *line, int linenumber)
         else
         {
             varValue = Info_ValueForKey(line, queryString);
+            suc = HStorage_AddDataFromStringInternal(obj, varValue);
         }
-        suc = HStorage_AddDataFromStringInternal(obj, varValue);
+        // suc has changed anyway.
         if (suc != qtrue)
         {
             Com_PrintError("HStorage_ParseLine: %s\n", HStorage_GetLastErrorInternal(obj));
