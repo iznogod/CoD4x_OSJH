@@ -1,4 +1,5 @@
 #pragma once
 #include <plugin/shared.h>
+#include "macro.hpp"
 
-__cdecl void SysCallDispatcher(const unsigned int CodeHash_, ...);
+CDECL void SysCallDispatcher(const unsigned int CodeHash_, ...);

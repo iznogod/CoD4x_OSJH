@@ -6,6 +6,5 @@
 BEGIN_EXTERN_C
 ///////////////////////////////////////////////////////////////////////////////
 // Adds plugin handler console commands.
-void __cdecl SV_AddPluginHandlerConsoleCommands();
-
+CDECL void SV_AddPluginHandlerConsoleCommands();
 END_EXTERN_C

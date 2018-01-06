@@ -4023,9 +4023,10 @@ void SV_BotUserMove(client_t *client)
         if(g_botai[num].rotIterCount)
         {
             --g_botai[num].rotIterCount;
-            for(i = 0; i < 3; ++i)
+            for(i = 0; i < 2; ++i)
             {
                 ucmd.angles[i] += g_botai[num].rotFrac[i];
+
                 if(ucmd.angles[i] < 0)
                     ucmd.angles[i] = 0xFFFF + ucmd.angles[i];
                 else if(ucmd.angles[i] > 0xFFFF)

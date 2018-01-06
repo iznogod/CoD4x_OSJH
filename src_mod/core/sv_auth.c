@@ -367,7 +367,8 @@ void Auth_ChangeAdminPassword( uint64_t steamid, const char* password ){
 	char salt[65];
 	unsigned long size;
 	char pwsalt[1024];
-	authData_admin_t *user, *user2;
+    authData_admin_t *user = NULL;
+    authData_admin_t *user2 = NULL;
 	int i;
 
 	if(!password || strlen(password) < 6){
@@ -377,17 +378,22 @@ void Auth_ChangeAdminPassword( uint64_t steamid, const char* password ){
 
 	NV_ProcessBegin();
 
-	for(i = 0, user2 = auth_admins.admins; i < MAX_AUTH_ADMINS; i++, user2++){
-		if(*user2->username && user2->steamid == steamid){
-		    user = user2;
-		}
-	}
-	if(user == NULL){
-			char ssti[128];
-			SV_SApiSteamIDToString(steamid, ssti, sizeof(ssti));
-	    Com_Printf("Error: unknown admin %s!\n", ssti);
-	    NV_ProcessEnd();
-	    return;
+    for(i = 0, user2 = auth_admins.admins; i < MAX_AUTH_ADMINS; i++, user2++)
+    {
+        if(*user2->username && user2->steamid == steamid)
+        {
+            user = user2;
+            break;
+        }
+    }
+    
+    if(user == NULL)
+    {
+        char ssti[128];
+        SV_SApiSteamIDToString(steamid, ssti, sizeof(ssti));
+        Com_Printf("Error: unknown admin %s!\n", ssti);
+        NV_ProcessEnd();
+        return;
 	}
 
 

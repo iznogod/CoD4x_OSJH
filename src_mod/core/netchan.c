@@ -611,7 +611,10 @@ int NET_CookieHash(netadr_t *from){
         for(i = 0; i < 4; i++)
             data[i] = from->ip[i];
 
-        *((unsigned short*)&data[4]) = from->port;
+        // Strict aliasing: changed to little-endian.
+        data[4] = (char)(from->port & 0xFF);
+        data[5] = (char)((from->port >> 8) & 0xFF);
+        //*((unsigned short*)&data[4]) = from->port;
 
         Com_Memcpy(&data[6], net_cookieSecret, sizeof(data) -6);
 
@@ -619,7 +622,10 @@ int NET_CookieHash(netadr_t *from){
         for(i = 0; i < 16; i++)
             data[i] = from->ip6[i];
 
-        *((unsigned short*)&data[16]) = from->port;
+        // Strict aliasing: changed to little-endian.
+        data[16] = (char)(from->port & 0xFF);
+        data[17] = (char)((from->port >> 8) & 0xFF);
+        //*((unsigned short*)&data[16]) = from->port;
 
         Com_Memcpy(&data[18], net_cookieSecret, sizeof(data) -18);
 

@@ -44,3 +44,9 @@ do { \
     public: \
     className(const className&) = delete; \
     void operator=(const className&) = delete
+
+#ifdef WIN32
+#define CDECL __cdecl
+#else
+#define CDECL __attribute__((__cdecl__))
+#endif
