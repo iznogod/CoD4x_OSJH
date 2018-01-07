@@ -40,6 +40,13 @@ void CPluginHandler::Init() // TODO PHANDLER : potential candidate to remove?
 void CPluginHandler::Shutdown()
 {
     Com_DPrintf("-------- Shutting down plugin handler --------\n");
+    for (auto& itPlugin : m_Plugins)
+    {
+        SetCurrentPlugin(&itPlugin.second);
+        itPlugin.second.Unload();
+        SetCurrentPlugin(nullptr);
+    }
+
     m_Plugins.clear();
     Com_Printf("-------- Plugin handler shut down --------\n");
 }
@@ -85,7 +92,7 @@ void CPluginHandler::LoadPlugin(const char* LibName_)
 
     Com_DPrintf("Initializing plugin\n");
     EPluginLoadingResult success = PLR_FAILED;
-    m_CurrentPlugin = &plugin; // Because during event it can invoke some functions that can change plugin's fields.
+    SetCurrentPlugin(&plugin); // Because during event it can invoke some functions that can change plugin's fields.
 
     constexpr auto hashOnPluginLoad = CRC32("OnPluginLoad");
     if (!plugin.Event(hashOnPluginLoad, &success))
@@ -94,7 +101,7 @@ void CPluginHandler::LoadPlugin(const char* LibName_)
         m_Plugins.erase(pluginName);
         return;
     }
-    m_CurrentPlugin = nullptr;
+    SetCurrentPlugin(nullptr);
 
     if (success != PLR_OK)
     {
@@ -119,9 +126,10 @@ void CPluginHandler::UnloadPlugin(const char* LibName_)
         Com_Printf("Plugin '%s' is not loaded\n", LibName_);
         return;
     }
-    m_CurrentPlugin = &plugin->second; // Because Unload() can invoke trap_* functions.
+    SetCurrentPlugin(&plugin->second); // Because Unload() can invoke trap_* functions.
     plugin->second.Unload();
-    m_CurrentPlugin = nullptr;
+    SetCurrentPlugin(nullptr);
+
     m_Plugins.erase(plugin);
     Com_Printf("Plugin '%s' has been unloaded\n", LibName_); // Newline because of possible plugin print.
 }
@@ -134,9 +142,9 @@ void CPluginHandler::PrintPluginInfo(const char* LibName_)
         Com_Printf("Plugin '%s' is not loaded\n", LibName_);
         return;
     }
-    m_CurrentPlugin = &plugin->second;
+    SetCurrentPlugin(&plugin->second);
     plugin->second.PrintPluginInfo();
-    m_CurrentPlugin = nullptr;
+    SetCurrentPlugin(nullptr);
 }
 
 void CPluginHandler::PrintPluginsSummary()
