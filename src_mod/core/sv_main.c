@@ -3484,8 +3484,6 @@ void SV_PreLevelLoad(){
 
     FS_ShutdownIwdPureCheckReferences();
 
-    SV_ReloadBanlist();
-
     NV_LoadConfig();
 
     G_InitMotd();

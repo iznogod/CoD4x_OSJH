@@ -849,70 +849,57 @@ static void Cmd_UnbanPlayer_f() {
     SV_RemoveBan(&baninfo);
 }
 
-static void Cmd_Undercover_f() {
-	int invokerclnum;
-	gclient_t* gc;
-	// make sure server is running
-	if ( !com_sv_running->boolean ) {
-		Com_Printf( "Server is not running.\n" );
-		return;
-	}
+static void Cmd_Undercover_f()
+{
+    int invokerclnum;
+    gclient_t *gc;
+    // make sure server is running
+    if (!com_sv_running->boolean)
+    {
+        Com_Printf("Server is not running.\n");
+        return;
+    }
 
-        invokerclnum = Cmd_GetInvokerClnum();
-        if(invokerclnum < 64 && invokerclnum >= 0)
+    invokerclnum = Cmd_GetInvokerClnum();
+    if (invokerclnum < 64 && invokerclnum >= 0)
+    {
+        if (Cmd_Argc() != 1)
         {
-		if ( Cmd_Argc() != 1 ) {
-			Com_Printf ("Usage: undercover\n");
-			return;
-		}
-		client_t* cl = &svs.clients[invokerclnum];
-		gc = G_GetPlayerState(invokerclnum);
-		if(gc && gc->sess.sessionState == STATE_PLAYING)
-		{
-			Com_Printf("Error: You can not use the command \"undercover\" when you are alive\n");
-			return;
-		}
-		cl->undercover ^= 1;
-		if(cl->undercover)
-		{
-			Com_Printf("Undercover mode is now turned on\n");
-		}else{
-			Com_Printf("Undercover mode is now turned off\n");
-		}
-		Auth_StoreUndercoverStatus(cl);
-		return;
+            Com_Printf("Usage: undercover\n");
+            return;
         }
+        client_t *cl = &svs.clients[invokerclnum];
+        gc = G_GetPlayerState(invokerclnum);
+        if (gc && gc->sess.sessionState == STATE_PLAYING)
+        {
+            Com_Printf("Error: You can not use the command \"undercover\" when you are alive\n");
+            return;
+        }
+        cl->undercover = cl->undercover == qtrue ? qfalse : qtrue;
+        Com_Printf("Undercover mode is now turned %s\n", cl->undercover ? "on" : "off");
+        Auth_StoreUndercoverStatus(cl);
+        return;
+    }
 
-	if ( Cmd_Argc() != 3 ) {
-		Com_Printf ("Usage: undercover <slot> <0/1>\n");
-		return;
-	}
+    if (Cmd_Argc() != 3)
+    {
+        Com_Printf("Usage: undercover <slot> <0/1>\n");
+        return;
+    }
 
-	client_t* cl = SV_GetPlayerByNum();
-	if(cl == NULL)
-		return;
+    client_t *cl = SV_GetPlayerByNum();
+    if (cl == NULL)
+        return;
 
-	gc = G_GetPlayerState(cl - svs.clients);
-	if(gc && gc->sess.sessionState == STATE_PLAYING)
-	{
-		Com_Printf("Error: You can not use the command \"undercover\" when you are alive\n");
-		return;
-	}
-	if(Cmd_Argv(2)[0] == '0')
-	{
-		cl->undercover = 0;
-	}
-	else if(Cmd_Argv(2)[0] == '1')
-	{
-		cl->undercover = 1;
-	}
-	else
-	{
-		Com_Printf ("Usage: undercover <slot> <0/1>\n");
-	}
+    gc = G_GetPlayerState(cl - svs.clients);
+    if (gc && gc->sess.sessionState == STATE_PLAYING)
+    {
+        Com_Printf("Error: You can not use the command \"undercover\" when you are alive\n");
+        return;
+    }
 
+    cl->undercover = Cmd_Argv(2)[0] == '1' ? qtrue : qfalse;
 }
-
 
 char* SV_IsGUID(char* GUID){
 

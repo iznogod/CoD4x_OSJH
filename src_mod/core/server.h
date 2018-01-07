@@ -867,7 +867,6 @@ void SV_InitGameProgs(int a1);
 
 //sv_banlist.c
 void SV_InitBanlist( void );
-void  SV_ReloadBanlist();
 char* SV_PlayerIsBanned(uint64_t playerid, uint64_t steamid, netadr_t *addr, char* message, int len);
 char* SV_PlayerBannedByip(netadr_t *netadr, char* message, int len);	//Gets called in SV_DirectConnect
 void SV_PlayerAddBanByip(netadr_t *remote, char *message, int expire);
@@ -876,9 +875,6 @@ void SV_RemoveBan(baninfo_t* baninfo);
 void SV_DumpBanlist( void );
 void SV_AddBanForPlayer(uint64_t steamid, uint64_t playerid, const char* name, int bantime, const char* banreason);
 void SV_AddBanForClient(client_t* cl, int bantime, const char* banreason);
-const char* SV_WriteBanTimelimit(int timeleftminutes, char *outbuffer, int outbufferlen);
-const char* SV_FormatBanMessage(int timeleftminutes, char *outbuffer, int outbufferlen, const char* reasonfmt, ...);
-
 
 void SV_AddSafeCommands();
 extern	serverStaticExt_t	svse;	// persistant server info across maps

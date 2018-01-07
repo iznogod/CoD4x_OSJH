@@ -56,7 +56,7 @@ typedef struct {	//It is only for timelimited tempbans to prevent happy reconnec
 ipBanList_t ipBans[MAX_IPBANS];
 
 
-const char* SV_WriteBanTimelimit(int timeleftsecs, char *outbuffer, int outbufferlen)
+static const char* SV_WriteBanTimelimit(int timeleftsecs, char *outbuffer, int outbufferlen)
 {
   if(timeleftsecs == -1)
   {
@@ -202,19 +202,11 @@ char* SV_PlayerIsBanned(uint64_t playerid, uint64_t steamid, netadr_t *addr, cha
   return NULL;
 }
 
-
-void SV_ReloadBanlist()
-{
-
-}
-
-
 void SV_InitBanlist()
 {
     ipbantime = Cvar_RegisterInt("banlist_maxipbantime", MAX_DEFAULT_IPBAN_MINUTES, 0, 20160, 0, "Limit of minutes to keep a ban against an ip-address up");
     sv_banappealurl = Cvar_RegisterString("banlist_appealurl", "", 0, "Showing the url for ban appeal");
     sv_banappealminhours = Cvar_RegisterInt("banlist_appealminhours", DEFAULT_APPEAL_MINHOURS, 0, 336, 0, "How much hours have to be left for showing an appeal url");
-
 }
 
 void SV_AddBan(baninfo_t* baninfo)
@@ -260,7 +252,7 @@ void SV_AddBanForClient(client_t* cl, int bantime, const char* banreason)
   baninfo.adr = cl->netchan.remoteAddress;
   SV_AddBan(&baninfo);
 }
-//SV_AddBanForSteamIDGUID()
+
 void SV_AddBanForPlayer(uint64_t steamid, uint64_t playerid, const char* name, int bantime, const char* banreason)
 {
   time_t aclock;
@@ -308,7 +300,7 @@ void SV_RemoveBan(baninfo_t* baninfo)
   //PHandler_Event(PLUGINS_ONPLAYERREMOVEBAN, baninfo);
 }
 
-const char* SV_FormatBanMessage(int timeleftsecs, char *outbuffer, int outbufferlen, const char* reasonfmt, ...)
+/*const char* SV_FormatBanMessage(int timeleftsecs, char *outbuffer, int outbufferlen, const char* reasonfmt, ...)
 {
   va_list		argptr;
   char appeal[256];
@@ -330,3 +322,4 @@ const char* SV_FormatBanMessage(int timeleftsecs, char *outbuffer, int outbuffer
   Com_sprintf(outbuffer, outbufferlen, "You have been banned from this server with the following reason: %s\n%s", reason, appeal);
   return outbuffer;
 }
+*/
