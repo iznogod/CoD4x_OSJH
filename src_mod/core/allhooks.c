@@ -160,11 +160,6 @@ void Hunk_ClearTempMemoryHigh()
     ((void(__cdecl*)())0x81968b8)();
 }
 
-void Com_Close()
-{
-    ((void(__cdecl*)())0x8121b82)();
-}
-
 void* Hunk_AllocateTempMemory(int size)
 {
     return ((void*(__cdecl*)(int))0x8196fea)(size);
@@ -228,4 +223,49 @@ int Com_LoadSoundAliases(const char *a1, const char *a2, signed int a3)
 int SL_GetStringOfSize(const char *string, int a2, unsigned int len)
 {
     return ((int(__cdecl*)(const char*, int, unsigned int))0x815043C)(string, a2, len);
+}
+
+void Com_ShutdownDObj()
+{
+    ((void(__cdecl*)())0x08125E5C)();
+}
+
+void DObjShutdown()
+{
+    ((void(__cdecl*)())0x081ACA44)();
+}
+
+void XAnimShutdown()
+{
+    ((void(__cdecl*)())0x081B5F1A)();
+}
+
+void Com_ShutdownWorld()
+{
+    ((void(__cdecl*)())0x08120554)();
+}
+
+void CM_Shutdown()
+{
+    ((void(__cdecl*)())0x08112688)();
+}
+
+void Hunk_Clear()
+{
+    ((void(__cdecl*)())0x08196EE6)();
+}
+
+void DB_ShutdownXAssets()
+{
+    ((void(__cdecl*)())0x08206AD2)();
+}
+
+void Scr_Shutdown()
+{
+    ((void(__cdecl*)())0x0815D8A2)();
+}
+
+void Hunk_ShutdownDebugMemory()
+{
+    ((void(__stdcall*)())0x08196FA8)();
 }

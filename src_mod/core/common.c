@@ -551,6 +551,20 @@ int Com_HashKey( char *string, int maxlen ) {
 	return hash;
 }
 
+void Com_Close()
+{
+    Com_ShutdownDObj();
+    DObjShutdown();
+    XAnimShutdown();
+    Com_ShutdownWorld();
+    CM_Shutdown();
+    Hunk_Clear();
+    if (com_useFastfiles->boolean)
+        DB_ShutdownXAssets();
+
+    Scr_Shutdown();
+    Hunk_ShutdownDebugMemory();
+}
 
 /*
 =============
