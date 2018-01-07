@@ -248,11 +248,12 @@ inline void trap_Cmd_Args(char* pBuffer_, const unsigned int Size_)
  * \param[in] CmdName_ - Name of console command.
  * \param[in] Function_ - Callback to be invoked when command issued.
  * \param[in] Power_ - Required minimum power of player to be able to invoke command.
+ * \note This is not real \a Cmd_AddCommand. It adds cmd to plugin's storage and executes Function_ from there.
  * */
-inline void trap_Cmd_AddCommand(const char* const CmdName_, xfunction_t Function_, const unsigned int Power_ = 0)
+inline void trap_Cmd_AddCommand(const char* const CmdName_, xfunction_t Function_)
 {
     constexpr unsigned int hash = CRC32("Cmd_AddCommand");
-    syscall(hash, CmdName_, Function_, Power_);
+    syscall(hash, CmdName_, Function_);
 }
 
 /**

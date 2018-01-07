@@ -2,12 +2,13 @@
 #include <string>
 #include <list>
 #include <map>
-#include <vector>
+#include <functional>
 #include "macro.hpp"
 
 BEGIN_EXTERN_C
 #include <core/sys_main.h>
 #include <plugin/shared.h>
+#include <core/scr_vm_types.h>
 END_EXTERN_C
 
 namespace phandler
@@ -65,17 +66,21 @@ public:
     // Remove address from memory allocations storage.
     void DeleteMemoryAddress(void* const Address_);
 
-    //////////////////////////////////////////
-    // Add name of console command to storage.
-    void SaveConsoleCommand(const char* const CmdName_);
+    //////////////////////////////////
+    // Add console command to storage.
+    void AddConsoleCommand(const char* const CmdName_, xfunction_t Callback_);
 
-    /////////////////////////////////////////
-    // Returns true if console command exist.
-    bool IsConsoleCommandExist(const char* const CmdName_);
+    //////////////////////////////////////////////////////////////
+    // Return true if console command registered with this plugin.
+    bool IsConsoleCommandExist(const char* const CmdName_) const;
 
-    ///////////////////////////////////////////////
-    // Remove name of console command from storage.
+    ///////////////////////////////////////
+    // Remove console command from storage.
     void DeleteConsoleCommand(const char* const CmdName_);
+
+    ////////////////////////////////////////////////////////
+    // Executes custom console command added by this plugin.
+    bool ExecuteConsoleCommand(const char* const CmdName_) const;
 
 private:
 
@@ -85,7 +90,7 @@ private:
     libHandle_t m_LibHandle;                        // Handle of a plugin library.
     TSysCall m_pEventDispatcher;                    // Plugin event dispatcher returned by "pluginEntry".
     std::map<void*, unsigned int> m_mapMemAllocs;   // Memory allocations <address, size of block>.
-    std::vector<std::string> m_vConsoleCommands;    // Custom console commands names.
+    std::map<std::string, std::function<void()>> m_mapConsoleCommands;    // Custom console commands.
 
     ////////////////////////////////////////////////////////////////////
     // If set to true, plugin successfully loaded and initialized.

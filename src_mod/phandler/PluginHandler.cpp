@@ -166,6 +166,41 @@ CPlugin* CPluginHandler::CurrentPlugin() const
     return m_CurrentPlugin;
 }
 
+void CPluginHandler::SetCurrentPlugin(CPlugin* const pPlugin_)
+{
+    if (!pPlugin_)
+    {
+        m_CurrentPlugin = nullptr;
+        return;
+    }
+
+    // You can not set just any address you want.
+    for (const auto& itPlugin : m_Plugins)
+        if (&itPlugin.second == pPlugin_)
+        {
+            m_CurrentPlugin = pPlugin_;
+            return;
+        }
+
+    assert(!"Attempting to set unknown pointer as current plugin.");
+}
+
+bool CPluginHandler::IsCustomConsoleCommandExist(const char* const CmdName_) const
+{
+    for (const auto& itPlugin : m_Plugins)
+        if (itPlugin.second.IsConsoleCommandExist(CmdName_))
+            return true;
+    return false;
+}
+
+bool CPluginHandler::ExecuteCustomConsoleCommand(const char* const CmdName_) const
+{
+    for (const auto& itPlugin : m_Plugins)
+        if (itPlugin.second.ExecuteConsoleCommand(CmdName_))
+            return true;
+    return false;
+}
+
 /*void CPluginHandler::PluginError(EPluginError_t Code_, const char* const Message_)
 {
     DURING_EVENT_ONLY();

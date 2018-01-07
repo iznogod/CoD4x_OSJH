@@ -1,5 +1,6 @@
 #include "Plugin.hpp"
 #include "dispatcher.hpp"
+#include "PluginHandler.hpp"
 #include <algorithm>
 #include <cassert>
 #include <compiletime/ctcrc32.hpp>
@@ -189,37 +190,62 @@ void CPlugin::DeleteMemoryAddress(void* const Address_)
     m_mapMemAllocs.erase(Address_);
 }
 
-void CPlugin::SaveConsoleCommand(const char* const CmdName_)
+void CPlugin::AddConsoleCommand(const char* const CmdName_, xfunction_t Callback_)
 {
-    for (const auto& strCmd : m_vConsoleCommands)
-        if (strCmd == CmdName_)
-        {
-            assert(!"Self-check: Command already added");
-            return;
-        }
+    if (GetPluginHandler()->IsCustomConsoleCommandExist(CmdName_))
+    {
+        assert(!"Command already exist");
+        return;
+    }
+    
+    if (!Callback_)
+    {
+        assert(Callback_ && "Can not add console command: callback is nullptr");
+        return;
+    }
 
-    m_vConsoleCommands.push_back(string(CmdName_));
+    string cmdName = CmdName_;
+    function<void()> cmdCallback = [this, Callback_]()
+    {
+        GetPluginHandler()->SetCurrentPlugin(this);
+        Callback_();
+        GetPluginHandler()->SetCurrentPlugin(nullptr);
+    };
+
+    m_mapConsoleCommands[cmdName] = cmdCallback;
 }
 
-bool CPlugin::IsConsoleCommandExist(const char* const CmdName_)
+bool CPlugin::IsConsoleCommandExist(const char* const CmdName_) const
 {
-    for (const auto& strCmd : m_vConsoleCommands)
-        if (strCmd == CmdName_)
+    for (const auto& itCmd : m_mapConsoleCommands)
+        if (itCmd.first == CmdName_)
             return true;
+
     return false;
 }
 
 void CPlugin::DeleteConsoleCommand(const char* const CmdName_)
 {
-    for (auto it = m_vConsoleCommands.begin(), end = m_vConsoleCommands.end(); it != end; ++it)
+    for (auto it = m_mapConsoleCommands.begin(), end = m_mapConsoleCommands.end(); it != end; ++it)
     {
-        if (*it == CmdName_)
+        if (it->first == CmdName_)
         {
-            m_vConsoleCommands.erase(it);
+            m_mapConsoleCommands.erase(it);
             return;
         }
     }
     assert(!"Self-check: Command not exist in this plugin");
+}
+
+bool CPlugin::ExecuteConsoleCommand(const char* const CmdName_) const
+{
+    const auto& itCmd = m_mapConsoleCommands.find(string(CmdName_));
+    if (itCmd == m_mapConsoleCommands.end())
+        return false;
+    
+    // Execute command.
+    itCmd->second();
+    return true;
 }
 
 #if 0
@@ -469,10 +495,11 @@ void CPlugin::freeAllocatedMemory()
 
 void CPlugin::removeCustomConsoleCommands()
 {
-    for (const auto& conCmd : m_vConsoleCommands)
-        Cmd_RemoveCommand(conCmd.c_str());
+    if (!m_mapConsoleCommands.size())
+        return;
 
-    m_vConsoleCommands.clear();
+    assert(!"You forgot to remove custom console commands added by your plugin");
+    m_mapConsoleCommands.clear();
 }
 
 #if 0

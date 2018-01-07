@@ -65,6 +65,18 @@ public:
     // Return current plugin.
     CPlugin* CurrentPlugin() const;
 
+    //////////////////////
+    // Set current plugin.
+    void SetCurrentPlugin(CPlugin* const pPlugin_);
+
+    ///////////////////////////////////////////////////////
+    // Return true if CmdName_ is registered in any plugin.
+    bool IsCustomConsoleCommandExist(const char* const CmdName_) const;
+
+    //////////////////////////////////////////////
+    // Executes registered plugin console command.
+    bool ExecuteCustomConsoleCommand(const char* const CmdName_) const;
+
   private:
     ////////////////////////////////////////////////////////////////
     // Returns true if plugin with name LibName_ has known checksum.

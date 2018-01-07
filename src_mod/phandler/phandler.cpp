@@ -12,3 +12,8 @@ void PHandler_Shutdown()
 {
     GetPluginHandler()->Shutdown();
 }
+
+qboolean PHandler_ExecuteConsoleCommand(const char* const CmdName_)
+{
+    return GetPluginHandler()->ExecuteCustomConsoleCommand(CmdName_) ? qtrue : qfalse;
+}

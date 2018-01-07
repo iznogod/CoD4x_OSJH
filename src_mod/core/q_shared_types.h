@@ -2,7 +2,7 @@
 #define __Q_SHARED_TYPES_H__
 
 // Standalone types from "q_shared.h" file.
-
+#include <stdlib.h>
 #include "q_math_types.h"
 
 typedef unsigned int long DWORD;

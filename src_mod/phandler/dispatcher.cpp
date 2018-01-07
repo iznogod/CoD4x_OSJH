@@ -6,9 +6,8 @@
 BEGIN_EXTERN_C
 #include <core/qcommon_io.h>
 #include <core/qcommon_mem.h>
-#include <core/cmd.h>
 #include <core/server.h>
-#include <core/scr_vm_types.h>
+#include <core/cmd.h>
 END_EXTERN_C
 
 using namespace phandler;
@@ -135,20 +134,13 @@ void SysCallDispatcher(const unsigned int CodeHash_, ...)
 
         case CRC32("Cmd_AddCommand"):
         {
-            // TODO: xfunction_t to lambda. Inside lambda - set current plugin.
-            Cmd_AddPCommand(VARG(0, const char*), VARG(1, xfunction_t), VARG(2, int));
-            GetPluginHandler()->CurrentPlugin()->SaveConsoleCommand(VARG(0, const char* const));
+            GetPluginHandler()->CurrentPlugin()->AddConsoleCommand(VARG(0, const char*), VARG(1, xfunction_t));
             break;
         }
         
         case CRC32("Cmd_RemoveCommand"):
         {
-            const char* CmdName = VARG(0, const char*);
-            if (GetPluginHandler()->CurrentPlugin()->IsConsoleCommandExist(CmdName))
-            {
-                Cmd_RemoveCommand(CmdName);
-                GetPluginHandler()->CurrentPlugin()->DeleteConsoleCommand(CmdName);
-            }
+            GetPluginHandler()->CurrentPlugin()->DeleteConsoleCommand(VARG(0, const char*));
             break;
         }
 

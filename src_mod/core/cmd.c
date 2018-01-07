@@ -34,6 +34,7 @@
 #include "punkbuster.h"
 #include "sys_thread.h"
 #include "sv_auth.h"
+#include <phandler/phandler.hpp>
 
 /*
 =============================================================================
@@ -1088,6 +1089,14 @@ void	Cmd_ExecuteString( const char *text )
 	}else if(!Q_stricmp(arg0, "kickid")){
 		Q_strncpyz(arg0, "kick", sizeof(arg0));
 	}
+
+    // Check plugin handler registered commands.
+    if (PHandler_ExecuteConsoleCommand(arg0) == qtrue)
+    {
+        Cmd_EndTokenizedString();
+        return;
+    }
+
 	// check registered command functions
 	for ( prev = &cmd_functions ; *prev ; prev = &cmd->next ) {
 		cmd = *prev;
