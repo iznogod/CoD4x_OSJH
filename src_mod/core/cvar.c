@@ -1222,9 +1222,9 @@ void Cvar_SetWithType( const char *var_name, CvarValue value, cvarType_t type, q
 	}
 	// create it
 	if ( !force ) {
-		Cvar_Register( var_name, CVAR_STRING, CVAR_USER_CREATED, value, limits, "External Cvar");
+		Cvar_Register( var_name, type, CVAR_USER_CREATED, value, limits, "External Cvar");
 	} else {
-		Cvar_Register( var_name, CVAR_STRING, 0, value, limits, "External Cvar");
+		Cvar_Register( var_name, type, 0, value, limits, "External Cvar");
 	}
 	Sys_LeaveCriticalSection(CRIT_CVAR);
 }
