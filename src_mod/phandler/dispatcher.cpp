@@ -2,6 +2,7 @@
 #include "macro.hpp"
 #include <compiletime/ctcrc32.hpp>
 #include "PluginHandler.hpp"
+#include <cstring>
 
 BEGIN_EXTERN_C
 #include <core/qcommon_io.h>
@@ -141,6 +142,72 @@ void SysCallDispatcher(const unsigned int CodeHash_, ...)
         case CRC32("Cmd_RemoveCommand"):
         {
             GetPluginHandler()->CurrentPlugin()->DeleteConsoleCommand(VARG(0, const char*));
+            break;
+        }
+
+        case CRC32("Cvar_Get_String"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            char* const buffer = VARG(1, char* const);
+            unsigned int size = VARG(2, unsigned int);
+            buffer[0] = '\0';
+            strcat_s(buffer, size, Cvar_GetVariantString(cvarName));
+            break;
+        }
+
+        case CRC32("Cvar_Get_Int"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            int* value = VARG(1, int*);
+            *value = Cvar_GetInt(cvarName);
+            break;
+        }
+
+        case CRC32("Cvar_Get_Bool"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            qboolean* value = VARG(1, qboolean*);
+            *value = Cvar_GetBool(cvarName);
+            break;
+        }
+
+        case CRC32("Cvar_Get_Float"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            float* value = VARG(1, float*);
+            *value = Cvar_GetFloat(cvarName);
+            break;
+        }
+
+        case CRC32("Cvar_Set_String"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            const char* const value = VARG(1, const char* const);
+            Cvar_Set(cvarName, value);
+            break;
+        }
+
+        case CRC32("Cvar_Set_Int"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            int value = VARG(1, int);
+            Cvar_SetIntByName(cvarName, value);
+            break;
+        }
+
+        case CRC32("Cvar_Set_Bool"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            qboolean value = VARG(1, qboolean);
+            Cvar_SetBoolByName(cvarName, value);
+            break;
+        }
+
+        case CRC32("Cvar_Set_Float"):
+        {
+            const char* const cvarName = VARG(0, const char* const);
+            float* value = VARG(1, float*);
+            Cvar_SetFloatByName(cvarName, *value);
             break;
         }
 

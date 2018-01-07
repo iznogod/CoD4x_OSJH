@@ -20,6 +20,30 @@ __cdecl void onTestConsoleCommand()
     trap_Com_Printf("[alltests]: Test console command executed\n");
 }
 
+void TestCvars()
+{
+    trap_Cvar_Set("test_cvar_float", 10.0f);
+    trap_Cvar_Set("test_cvar_int", 20);
+    trap_Cvar_Set("test_cvar_bool", qtrue);
+    trap_Cvar_Set("test_cvar_str", "test string");
+
+    float fVal = 0.0f;
+    trap_Cvar_Get("test_cvar_float", fVal);
+    trap_Com_Printf("[alltests-cvars]: test_cvar_float is %g, must be 10.0\n", fVal);
+
+    int iVal = 0;
+    trap_Cvar_Get("test_cvar_int", iVal);
+    trap_Com_Printf("[alltests-cvars]: test_cvar_int is %d, must be 20\n", iVal);
+
+    qboolean bVal = qfalse;
+    trap_Cvar_Get("test_cvar_bool", bVal);
+    trap_Com_Printf("[alltests-cvars]: test_cvar_bool is %d, must be 1 (aka qtrue)\n", bVal);
+
+    char strVal[16] = {'\0'};
+    trap_Cvar_Get("test_cvar_str", strVal, sizeof(strVal));
+    trap_Com_Printf("[alltests-cvars]: test_cvar_str is '%s', must be 'test string'\n", strVal);
+}
+
 EPluginLoadingResult CPluginAllTests::OnPluginLoad()
 {
     trap_Com_Printf("[alltests]: Hello, %s world!\n", "formatted");
@@ -42,7 +66,8 @@ EPluginLoadingResult CPluginAllTests::OnPluginLoad()
     trap_MemFree(pMem);
 
     trap_Cmd_AddCommand("testconsolecommand", onTestConsoleCommand);
-    
+    TestCvars();
+
     return PLR_OK;
 }
 

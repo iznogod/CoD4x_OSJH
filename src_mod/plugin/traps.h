@@ -265,3 +265,92 @@ inline void trap_Cmd_RemoveCommand(const char* const CmdName_)
     constexpr unsigned int hash = CRC32("Cmd_RemoveCommand");
     syscall(hash, CmdName_);
 }
+
+/**
+ * \brief Get value of CVar as string.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[out] Buffer_ - A storage for CVar string value.
+ * \param[in] Size_ - Size of passed buffer.
+ * */
+inline void trap_Cvar_Get(const char* const CvarName_, char* const Buffer_, unsigned int Size_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Get_String");
+    syscall(hash, CvarName_, Buffer_, Size_);
+}
+
+/**
+ * \brief Get value of CVar as integer value.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[out] Value_ - A storage for CVar integer value.
+ * */
+inline void trap_Cvar_Get(const char* const CvarName_, int& Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Get_Int");
+    syscall(hash, CvarName_, &Value_);
+}
+
+/**
+ * \brief Get value of CVar as qboolean value.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[out] Value_ - A storage for CVar qboolean value.
+ * */
+inline void trap_Cvar_Get(const char* const CvarName_, qboolean& Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Get_Bool");
+    syscall(hash, CvarName_, &Value_);
+}
+
+/**
+ * \brief Get value of CVar as float value.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[out] Value_ - A storage for CVar float value.
+ * */
+inline void trap_Cvar_Get(const char* const CvarName_, float& Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Get_Float");
+    syscall(hash, CvarName_, &Value_);
+}
+
+/**
+ * \brief Set value of CVar as string.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[in] Value_ - Null-terminated string.
+ * */
+inline void trap_Cvar_Set(const char* const CvarName_, const char* const Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Set_String");
+    syscall(hash, CvarName_, Value_);
+}
+
+/**
+ * \brief Set value of CVar as integer value.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[in] Value_ - integer value.
+ * */
+inline void trap_Cvar_Set(const char* const CvarName_, const int Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Set_Int");
+    syscall(hash, CvarName_, Value_);
+}
+
+/**
+ * \brief Set value of CVar as qboolean value.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[in] Value_ - qboolean value.
+ * */
+inline void trap_Cvar_Set(const char* const CvarName_, const qboolean Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Set_Bool");
+    syscall(hash, CvarName_, Value_);
+}
+
+/**
+ * \brief Set value of CVar as float value.
+ * \param[in] CvarName_ - Name of CVar.
+ * \param[in] Value_ - float value.
+ * */
+inline void trap_Cvar_Set(const char* const CvarName_, const float Value_)
+{
+    constexpr unsigned int hash = CRC32("Cvar_Set_Float");
+    syscall(hash, CvarName_, &Value_); // Yep, passing like pointer to a float.
+}
