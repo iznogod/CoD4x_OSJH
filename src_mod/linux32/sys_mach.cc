@@ -31,7 +31,6 @@
 #include <sys_cod4defs.h>
 #include <sec_crypto.h>
 #include <sec_update.h>
-#include <objfile_parser.h>
 
 #include <sys/resource.h>
 #include <libgen.h>
@@ -147,12 +146,4 @@ const char *Sys_StripAppBundle( const char *dir )
 void Sys_TermProcess( )
 {
 
-}
-
-char** GetStrTable(void* buff, int len, sharedlib_data_t *text)
-{
-	char** dummy;
-	dummy = malloc(sizeof(char**));
-	dummy[0] = NULL;
-	return dummy;
 }

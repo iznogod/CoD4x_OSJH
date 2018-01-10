@@ -22,7 +22,6 @@
 #include <cmd.h>
 #include <qcommon.h>
 #include <qcommon_mem.h>
-#include <objfile_parser.h>
 #include <sys_main.h>
 #include <sys_cod4defs.h>
 #include "sys_win32.h"
@@ -789,11 +788,6 @@ Sys_Backtrace
 int Sys_Backtrace(void** buffer, int size)
 {
     return 0;
-}
-
-char** GetStrTable(void* filebuf, int len, sharedlib_data_t *text)
-{
-	return PE32_GetStrTable(filebuf, len, text);
 }
 
 void CON_InitInternal();

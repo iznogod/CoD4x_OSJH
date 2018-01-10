@@ -20,7 +20,6 @@
 */
 
 #include <q_shared.h>
-#include <objfile_parser.h>
 
 //#define WIN32_LEAN_AND_MEAN // Need to test if it works with it :P
 
@@ -45,7 +44,6 @@ qboolean windowsCreated;
 } WinVars_t;
 
 void CON_Show( int visLevel, qboolean quitOnClose );
-char** PE32_GetStrTable(void *buff, int len, sharedlib_data_t *text);
 
 extern WinVars_t g_wv;
 extern byte cod4_plt[8192];
