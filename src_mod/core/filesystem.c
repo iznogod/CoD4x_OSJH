@@ -2743,9 +2743,9 @@ static char* g_languages[] = {"english", "french", "german", "italian",
                               "korean", "taiwanese", "japanese", "chinese",
                               "thai", "leet", "czech"};
 
-int SEH_GetCurrentLanguage(void)
+unsigned int SEH_GetCurrentLanguage()
 {
-	return loc_language->integer;
+    return loc_language->integer;
 }
 
 const char* SEH_GetLanguageName(unsigned int langindex)

@@ -2,6 +2,7 @@
 #include "q_shared.h"
 #include "player.h"
 #include "msg_types.h"
+#include "xassets_types.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // misc_hooks.asm
@@ -71,3 +72,10 @@ __cdecl void Hunk_Clear();
 __cdecl void DB_ShutdownXAssets();
 __cdecl void Scr_Shutdown();
 __stdcall void Hunk_ShutdownDebugMemory();
+__cdecl void DB_LoadXAssets(XZoneInfo* Info_, unsigned int AssetsCount_, int A3_);
+__cdecl void XAnimInit();
+__cdecl void DB_FreeUnusedResources();
+void DB_LoadSounds();
+__cdecl void BG_FillInAllWeaponItems();
+__cdecl void DB_PostLoadXZone();
+__cdecl void DB_UpdateDebugZone();

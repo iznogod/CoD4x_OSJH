@@ -269,3 +269,38 @@ void Hunk_ShutdownDebugMemory()
 {
     ((void(__stdcall*)())0x08196FA8)();
 }
+
+void DB_LoadXAssets(XZoneInfo* Info_, unsigned int AssetsCount_, int A3_)
+{
+    ((void(__cdecl*)(XZoneInfo*, unsigned int, int))0x08205E86)(Info_, AssetsCount_, A3_);
+}
+
+void XAnimInit()
+{
+    ((void(__cdecl*)())0x081B649C)();
+}
+
+void DB_FreeUnusedResources()
+{
+    ((void(__cdecl*)())0x082046F2)();
+}
+
+void DB_LoadSounds()
+{
+    ((void(__cdecl*)())0x08209C00)();
+}
+
+void BG_FillInAllWeaponItems()
+{
+    ((void(__cdecl*)())0x080622BA)();
+}
+
+void DB_PostLoadXZone()
+{
+    ((void(__cdecl*)())0x08205DAE)();
+}
+
+void DB_UpdateDebugZone()
+{
+    ((void(__cdecl*)())0x08206A62)();
+}

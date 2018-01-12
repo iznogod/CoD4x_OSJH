@@ -234,4 +234,8 @@ int FS_WriteChecksumInfo(const char* filename, byte* data, int maxsize);
 int FS_WriteFileOSPath( char *ospath, const void *buffer, int size );
 void FS_ClearPakReferences( int flags );
 int FS_filelengthForOSPath( const char* ospath );
+
+const char* SEH_GetLanguageName(unsigned int langindex);
+__cdecl unsigned int SEH_GetCurrentLanguage();
+
 #endif

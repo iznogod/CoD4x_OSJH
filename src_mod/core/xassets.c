@@ -32,6 +32,7 @@
 #include "cmd.h"
 #include "./xassets/xmodel.h"
 #include "allhooks.h"
+#include "sys_main.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -39,6 +40,9 @@
 void XAssetUsage_f();
 void XAssetUsage2_f();
 void XModelList_f();
+
+static qboolean* g_pInitializing = (qboolean*)0x141B18C4;
+#define g_initializing (*g_pInitializing)
 
 void R_Init(){
 
@@ -867,6 +871,60 @@ void DB_SyncXAssets()
 
 char g_zoneNameList[2080];
 
-#if 0
+void __cdecl DB_SetInitializing(qboolean State_)
+{
+    g_initializing = State_;
+}
 
-#endif
+static void DB_BuildOSPath_FromSource(size_t MaxLen_, const char* ffName_, int ffDir_, char *Path_)
+{
+    const char* lang = NULL;       // Language as string.
+    char *cwd = NULL;              // Current working directory.
+    char *pLoadSubstr = NULL;      // Ptr to a position of "_load" substring in ffName_
+    char mapFFName[64] = {'\0'};
+
+    cwd = Sys_DefaultInstallPath();
+    if (ffDir_ == 1)
+        Com_sprintf(Path_, MaxLen_, "%s/%s/%s.ff", cwd, fs_gameDirVar->string, ffName_);
+    else if (ffDir_ == 2)
+    {
+        pLoadSubstr = strstr(ffName_, "_load");
+        if (pLoadSubstr)
+            Q_strncpyz(mapFFName, ffName_, (int)(pLoadSubstr - ffName_ + 1));
+        else
+            Q_strncpyz(mapFFName, ffName_, sizeof(mapFFName));
+
+        Com_sprintf(Path_, MaxLen_, "%s/%s/%s/%s.ff", cwd, "usermaps", mapFFName, ffName_);
+    }
+    else if (ffDir_ == 0)
+    {
+        lang = SEH_GetLanguageName(SEH_GetCurrentLanguage());
+        if (!lang)
+            lang = "english";
+
+        Com_sprintf(Path_, MaxLen_, "%s/zone/%s/%s.ff", cwd, lang, ffName_);
+    }
+}
+
+qboolean DB_ModFileExists()
+{
+    char filename[256];
+
+    if (!fs_gameDirVar->string[0])
+        return qfalse;
+
+    DB_BuildOSPath_FromSource(0x100u, "mod", 1, filename);
+    FILE *f = fopen(filename, "r");
+    qboolean result = f != NULL ? qtrue : qfalse;
+    if (f)
+        fclose(f);
+    return result;
+}
+
+static unsigned int (**pDB_GetXAssetSizeHandler)() = (unsigned int (**)())0x0823F680;
+#define DB_GetXAssetSizeHandler (pDB_GetXAssetSizeHandler)
+
+unsigned int DB_GetXAssetTypeSize(int Type_)
+{
+    return DB_GetXAssetSizeHandler[Type_]();
+}

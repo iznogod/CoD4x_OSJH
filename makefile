@@ -89,7 +89,7 @@ MODULES_TARGETPATH = $(addprefix module_,$(MODULES) $(EXT_MODULES))
 
 ###############################
 # Default rule: rebuild server.
-all: notify version_make_progress $(TARGET) $(ADDITIONAL_OBJ) $(SECURITY)
+all: notify $(TARGET) $(ADDITIONAL_OBJ) $(SECURITY) version_make_progress
 	@echo Server done
 
 notify:

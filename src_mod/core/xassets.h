@@ -26,41 +26,18 @@
 
 #include "q_shared.h"
 #include "dobj.h"
-/*
-typedef struct{
-    const char*		fastfile;
-    int			loadpriority;
-    int			notknown;
-}XZoneInfo;
-*/
-
-typedef struct
-{
-  const char *name;
-  int allocFlags;
-  int freeFlags;
-}XZoneInfo;
-
-
-
+#include "xassets_types.h"
 
 void R_Init();
-void __cdecl DB_SetInitializing(qboolean);
+void __cdecl DB_SetInitializing(qboolean State_);
 qboolean __cdecl DB_FileExists(const char* filename, int mode);
-qboolean __cdecl DB_ModFileExists(void);
-void __cdecl DB_LoadXAssets(XZoneInfo*, unsigned int assetscount, int);
-int __cdecl DB_GetXAssetTypeSize(int type);
-void __cdecl XAnimInit(void);
+qboolean __cdecl DB_ModFileExists();
+__cdecl unsigned int DB_GetXAssetTypeSize(int Type_);
 void XAssets_PatchLimits(void);
-void DB_LoadSounds();
 void Material_DirtyTechniqueSetOverrides();
-void BG_FillInAllWeaponItems();
-void DB_FreeUnusedResources();
 void DB_LoadXAssets_Hook(XZoneInfo*, unsigned int assetscount);
 void DB_BuildOverallocatedXAssetList(char* configstring, int len);
 void DB_SyncXAssets();
-void DB_PostLoadXZone();
-void DB_UpdateDebugZone();
 void DB_AddUserMapDir(const char *dir);
 void DB_ReferencedFastFiles(char* g_zoneSumList, char* g_zoneNameList, int maxsize);
 
