@@ -161,21 +161,6 @@ int __cdecl FindEntityId(int, int);
 
 #define MAX_SCRIPT_FILEHANDLES 10
 
-typedef enum{
-    SCR_FH_FILE,
-    SCR_FH_PARALIST,
-    SCR_FH_INDEXPARALIST
-}scr_fileHandleType_t;
-
-
-typedef struct{
-    FILE* fh;
-    scr_fileHandleType_t type;
-    char filename[MAX_QPATH];
-    int baseOffset;
-    int fileSize;
-}scr_fileHandle_t;
-
 qboolean Scr_FS_CloseFile( scr_fileHandle_t* f );
 int Scr_FS_ReadLine( void *buffer, int len, fileHandle_t f );
 qboolean Scr_FS_AlreadyOpened(char* qpath);

@@ -80,18 +80,6 @@ void SysCallDispatcher(const unsigned int CodeHash_, ...)
             break;
         }
 
-        case CRC32("RemoveBanByIP"):
-        {
-            SV_RemoveBanByip(VARG(0, netadr_t*));
-            break;
-        }
-
-        case CRC32("AddBanByIP"):
-        {
-            SV_PlayerAddBanByip(VARG(0, netadr_t*), VARG(1, char*), VARG(2, int));
-            break;
-        }
-
         case CRC32("MemAlloc"):
         {
             int iSize = VARG(0, int);

@@ -163,28 +163,6 @@ inline void trap_SV_SetStat(const int ClientNum_, const unsigned int Index_, con
 }
 
 /**
- * \brief Remove player ban by IP.
- * \param[in] Client_ - Client's \a netadr_t structure.
- * */
-inline void trap_RemoveBanByIP(const netadr_t* const Client_)
-{
-    constexpr unsigned int hash = CRC32("RemoveBanByIP");
-    syscall(hash, Client_);
-}
-
-/**
- * \brief Add player ban by IP.
- * \param[in] Client_ - Client's \a netadr_t structure.
- * \param[in] Message_ - Description of ban.
- * \param[in] Expire_ - Duration of ban.
- * */
-inline void trap_AddBanByIP(const netadr_t* const Client_, const char* Message_, const int Expire_)
-{
-    constexpr unsigned int hash = CRC32("AddBanByIP");
-    syscall(hash, Client_, Message_, Expire_);
-}
-
-/**
  * \brief Allocate RAM.
  * \param[in] Size_ - Desired size of memory block.
  * \return Address of allocated memory or \a nullptr in case of failure.

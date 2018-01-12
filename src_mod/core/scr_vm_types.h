@@ -437,4 +437,21 @@ typedef struct
 
 #pragma pack(pop)
 
+typedef enum
+{
+    SCR_FH_FILE,
+    SCR_FH_PARALIST,
+    SCR_FH_INDEXPARALIST
+} scr_fileHandleType_t;
+
+
+typedef struct
+{
+    FILE* fh;
+    scr_fileHandleType_t type;
+    char filename[MAX_QPATH];
+    int baseOffset;
+    int fileSize;
+} scr_fileHandle_t;
+
 #endif

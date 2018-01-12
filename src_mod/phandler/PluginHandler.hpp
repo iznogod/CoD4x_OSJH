@@ -55,10 +55,10 @@ public:
     {
         for (auto &plugin : m_Plugins)
         {
-            m_CurrentPlugin = &plugin.second;
+            CPlugin* pOldPlugin = SetCurrentPlugin(&plugin.second);
             m_CurrentPlugin->Event(EventHashCode_, Params...);
+            SetCurrentPlugin(pOldPlugin);
         }
-        m_CurrentPlugin = nullptr;
     }
     
     /////////////////////////
@@ -67,7 +67,7 @@ public:
 
     //////////////////////
     // Set current plugin.
-    void SetCurrentPlugin(CPlugin* const pPlugin_);
+    CPlugin* SetCurrentPlugin(CPlugin* const pPlugin_);
 
     ///////////////////////////////////////////////////////
     // Return true if CmdName_ is registered in any plugin.

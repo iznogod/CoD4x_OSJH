@@ -42,9 +42,9 @@ void CPluginHandler::Shutdown()
     Com_DPrintf("-------- Shutting down plugin handler --------\n");
     for (auto& itPlugin : m_Plugins)
     {
-        SetCurrentPlugin(&itPlugin.second);
+        CPlugin* pOldPlugin = SetCurrentPlugin(&itPlugin.second);
         itPlugin.second.Unload();
-        SetCurrentPlugin(nullptr);
+        SetCurrentPlugin(pOldPlugin);
     }
 
     m_Plugins.clear();
@@ -126,9 +126,9 @@ void CPluginHandler::UnloadPlugin(const char* LibName_)
         Com_Printf("Plugin '%s' is not loaded\n", LibName_);
         return;
     }
-    SetCurrentPlugin(&plugin->second); // Because Unload() can invoke trap_* functions.
+    CPlugin* pOldPlugin = SetCurrentPlugin(&plugin->second); // Because Unload() can invoke trap_* functions.
     plugin->second.Unload();
-    SetCurrentPlugin(nullptr);
+    SetCurrentPlugin(pOldPlugin);
 
     m_Plugins.erase(plugin);
     Com_Printf("Plugin '%s' has been unloaded\n", LibName_); // Newline because of possible plugin print.
@@ -174,23 +174,26 @@ CPlugin* CPluginHandler::CurrentPlugin() const
     return m_CurrentPlugin;
 }
 
-void CPluginHandler::SetCurrentPlugin(CPlugin* const pPlugin_)
+CPlugin* CPluginHandler::SetCurrentPlugin(CPlugin* const pPlugin_)
 {
     if (!pPlugin_)
     {
+        CPlugin* pOldPlugin = m_CurrentPlugin;
         m_CurrentPlugin = nullptr;
-        return;
+        return pOldPlugin;
     }
 
     // You can not set just any address you want.
     for (const auto& itPlugin : m_Plugins)
         if (&itPlugin.second == pPlugin_)
         {
+            CPlugin* pOldPlugin = m_CurrentPlugin;
             m_CurrentPlugin = pPlugin_;
-            return;
+            return pOldPlugin;
         }
 
     assert(!"Attempting to set unknown pointer as current plugin.");
+    return nullptr;
 }
 
 bool CPluginHandler::IsCustomConsoleCommandExist(const char* const CmdName_) const
