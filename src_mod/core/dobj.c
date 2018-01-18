@@ -1,7 +1,7 @@
 #include "dobj.h"
 #include "misc.h"
 
-void PrintDObjInfo(DObj_t* dobj)
+void DObjDumpInfo(DObj_t* dobj)
 {
 	int idx, i, j;
 	char* duplicatePartsString;
@@ -54,13 +54,13 @@ signed int (__cdecl *GetDObjPartInfo)(gentity_t *ent, int partNameIdx, DObjPartC
 void (*DObjInit)() = (void(*)())0x081ACB00;
 void (*DB_LoadDObjs)() = (void(*)())0x0812616C;
 
-/* GetDObjForEntity
+/* Com_GetServerDObj
  * 0x08125E32
  */
-DObj_t* GetDObjForEntity(int entNum)
+DObj_t* Com_GetServerDObj(int entNum)
 {
-	if(SV_ENTITY_DOBJS[entNum])
-		return &SV_DOBJ[SV_ENTITY_DOBJS[entNum]];
+	if(serverObjMap[entNum])
+		return &objBuf[serverObjMap[entNum]];
 	return NULL;
 }
 
@@ -69,5 +69,5 @@ DObj_t* GetDObjForEntity(int entNum)
  */
 qboolean EntHasDObj(gentity_t* ent)
 {
-	return GetDObjForEntity(ent->s.number) != NULL;
+	return Com_GetServerDObj(ent->s.number) != NULL;
 }

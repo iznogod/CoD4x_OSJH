@@ -3110,16 +3110,16 @@ void Scr_IsArray_f()
     Scr_AddBool(Scr_GetType(0) == 1 ? qtrue : qfalse);
 }
 
-/* PrintModelBonesInfo
+/* SV_DObjDumpInfo
  * 0x0817CBEC
  */
-void PrintModelBonesInfo(gentity_t *ent)
+void SV_DObjDumpInfo(gentity_t *ent)
 {
     if (com_developer->boolean)
     {
-        DObj_t *dobj = GetDObjForEntity(ent->s.number);
+        DObj_t *dobj = Com_GetServerDObj(ent->s.number);
         if (dobj)
-            PrintDObjInfo(dobj);
+            DObjDumpInfo(dobj);
         else
             Com_Printf("no model.\n");
     }
@@ -3142,7 +3142,7 @@ qboolean GetTagInfoForEntity(gentity_t *ent, int partNameIdx, DObjPartCache_t *c
     if (cache->svsFrameTime == svs.time && cache->entNum == ent->s.number && cache->partNameIdx == partNameIdx)
         return qtrue;
 
-    if (EntHasDObj(ent))
+    if (SV_DObjExists(ent))
     {
         if (GetDObjPartInfo(ent, partNameIdx, &cache->vectorSet))
         {
@@ -3152,7 +3152,7 @@ qboolean GetTagInfoForEntity(gentity_t *ent, int partNameIdx, DObjPartCache_t *c
             return qtrue;
         }
         if (seekInSubModels)
-            PrintModelBonesInfo(ent);
+            SV_DObjDumpInfo(ent);
     }
     return qfalse;
 }

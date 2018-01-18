@@ -50,14 +50,14 @@ typedef struct DObj_s
 } DObj_t;
 
 
-DObj_t* GetDObjForEntity(int entNum);
-qboolean EntHasDObj(gentity_t* ent);
-void PrintDObjInfo(DObj_t* dobj);
+DObj_t* Com_GetServerDObj(int entNum);
+qboolean SV_DObjExists(gentity_t* ent);
+void DObjDumpInfo(DObj_t* dobj);
 extern signed int (__cdecl *GetDObjPartInfo)(gentity_t *ent, int partNameIdx, DObjPartCacheVectorSet_t *vectorSet);
 extern void (*DObjInit)();
 extern void (*DB_LoadDObjs)();
 
-#define SV_ENTITY_DOBJS ((WORD*)  0x088E8500)    // Max = 0x400
-#define SV_DOBJ         ((DObj_t*)0x088E8D20)    // Max = 0x800
+#define serverObjMap ((WORD*)  0x088E8500)    // Max = 0x400 (1024)
+#define objBuf       ((DObj_t*)0x088E8D20)    // Max = 0x800 (2048)
 
 #endif //__DOBJ_H__
