@@ -10,6 +10,7 @@
 #include "osjh_main.h"
 
 #include "scr_vm.h"
+#include "scr_vm_functions.h"
 #include "xassets/weapondef.h"
 #include "bg_public.h"
 
@@ -30,7 +31,7 @@ extern int GScr_LoadScriptAndLabel(const char *scriptName, const char *labelName
  **************************************************************************/
  
 static bool *osjh_playerElevationPermissions = NULL;
-static uint32_t osjh_callbacks[OSJH_CB_COUNT];
+static int osjh_callbacks[OSJH_CB_COUNT];
 
 /**************************************************************************
  * Static functions                                                       *
@@ -60,6 +61,20 @@ static void PlayerCmd_ClientCommand(scr_entref_t arg)
     ClientCommand(entityNum);
 }
 
+static void PlayerCmd_allowElevate(scr_entref_t arg)
+{
+    if(arg.classnum)
+    {
+        Scr_ObjectError("Not an entity");
+    }
+    else
+    {
+        int entityNum = arg.entnum;
+        bool canElevate = Scr_GetInt(0);
+        osjh_playerElevationPermissions[entityNum] = canElevate;
+    }
+}
+
 /**************************************************************************
  * Regular functions                                                      *
  **************************************************************************/
@@ -69,8 +84,12 @@ void osjh_init(void)
     osjh_playerElevationPermissions = malloc(TMP_MAXCLIENTS * sizeof(bool));
     
     // Init callbacks
-    osjh_callbacks[OSJH_CB_PLAYERCOMMAND]   = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_PlayerCommand", 0);
-    osjh_callbacks[OSJH_CB_RPGFIRED]        = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_RPGFired",      0);
+    osjh_callbacks[OSJH_CB_PLAYERCOMMAND] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_PlayerCommand", 0); //OSJH
+    osjh_callbacks[OSJH_CB_RPGFIRED] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_RPGFired", 0); //OSJH
+    //osjh_callbacks[OSJH_CB_USERINFOCHANGED] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_UserInfoChanged");
+    osjh_callbacks[OSJH_CB_MELEEBUTTONPRESSED] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_MeleeButton", 0);
+    osjh_callbacks[OSJH_CB_USEBUTTONPRESSED] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_UseButton", 0);
+    osjh_callbacks[OSJH_CB_ATTACKBUTTONPRESSED] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_AttackButton", 0);
 }
 
 void osjh_deinit(void)
@@ -91,6 +110,8 @@ void osjh_addMethodsAndFunctions(void)
     Scr_AddFunction("setcvar",      GScr_SetCvar,       0);
     
     Scr_AddMethod("clientcommand",  PlayerCmd_ClientCommand, 0);
+    Scr_AddMethod("allowelevate",   PlayerCmd_allowElevate,  0);
+    Scr_AddMethod("setclientcvar",  PlayerCmd_SetClientDvar, 0);
 }
 
 /**************************************************************************

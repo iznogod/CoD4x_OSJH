@@ -702,7 +702,7 @@ into a more C friendly form.
 void SV_UserinfoChanged( client_t *cl ) {
 	char	*val;
 	char	ip[128];
-	int	i;
+	//int	i;
 	int	len;
 
 /*
@@ -728,6 +728,7 @@ void SV_UserinfoChanged( client_t *cl ) {
 	// rate command
 	// if the client is on the same subnet as the server and we aren't running an
 	// internet public server, assume they don't need a rate choke
+    /*
 	if ( Sys_IsLANAddress( &cl->netchan.remoteAddress )) {
 		cl->rate = 1048576;	// lans should not rate limit
 	} else {
@@ -760,6 +761,10 @@ void SV_UserinfoChanged( client_t *cl ) {
 	}
 	
 	cl->snapshotMsec = 1000 / i;
+    */
+    // OSJH: No funny snaps business
+    cl->rate = sv_maxRate->integer;
+    cl->snapshotMsec = (1000 / 20);
 
 	val = Info_ValueForKey(cl->userinfo, "cl_voice");
 	cl->sendVoice = atoi(val);

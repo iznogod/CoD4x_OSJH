@@ -444,7 +444,7 @@ void Perks_RegisterCvars(void)
 	 perk_parabolicRadius = Cvar_RegisterFloat( "perk_parabolicRadius", 400.0, 0.0, 3.4028235e38, 0x80u, "Eavesdrop perk's effective radius");
 	 perk_parabolicAngle = Cvar_RegisterFloat( "perk_parabolicAngle", 180.0, 0.0, 180.0, 0x80u, "Eavesdrop perk's effective FOV angle");
 	 perk_parabolicIcon = Cvar_RegisterString( "perk_parabolicIcon", "specialty_parabolic", 0x80u, "Eavesdrop icon to use when displaying eavesdropped voice chats");
-	 perk_sprintMultiplier = Cvar_RegisterFloat( "perk_sprintMultiplier", 2.0, 0.0, 3.4028235e38, 0x80u, "Multiplier for player_sprinttime");
+	 perk_sprintMultiplier = Cvar_RegisterFloat( "perk_sprintMultiplier", 1000, 0.0, 3.4028235e38, 0x80u|0x48, "Multiplier for player_sprinttime");
 }
 
 

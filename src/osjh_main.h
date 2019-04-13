@@ -5,6 +5,10 @@
 typedef enum {
     OSJH_CB_PLAYERCOMMAND,
     OSJH_CB_RPGFIRED,
+    OSJH_CB_USERINFOCHANGED,
+    OSJH_CB_MELEEBUTTONPRESSED,
+    OSJH_CB_USEBUTTONPRESSED,
+    OSJH_CB_ATTACKBUTTONPRESSED,
     OSJH_CB_COUNT, // Always keep this as last entry
 } osjh_callback_t;
 
