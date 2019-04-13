@@ -20,6 +20,7 @@
 ===========================================================================
 */
 
+#include "osjh_main.h" // OSJH
 
 #include "q_shared.h"
 #include "qcommon_io.h"
@@ -2376,9 +2377,32 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK, qb
 
 	if ( clientOK ) {
 		// pass unknown strings to the game
-		if ( !u->name && sv.state == SS_GAME ) {
-			ClientCommand( cl - svs.clients );
-		}
+		if ( !u->name && sv.state == SS_GAME ) //OSJH
+		{
+			int clientNum = cl - svs.clients;
+			int callback = osjh_getCallback(OSJH_CB_PLAYERCOMMAND);
+			if(!callback)
+			{
+				ClientCommand( cl - svs.clients );
+				return;
+			}
+			Scr_MakeArray();
+			int args = SV_Cmd_Argc();
+			for(int i = 0; i < args; i++)
+			{
+				char tmp[1024];
+				SV_Cmd_ArgvBuffer(i, tmp, sizeof(tmp));
+				for(int j = 0; j < strlen(tmp); j++)
+				{
+					if((unsigned char)tmp[j] < 10)
+						tmp[j] = '?';
+				}
+				Scr_AddString(tmp);
+				Scr_AddArray();
+			}
+			int threadId = Scr_ExecEntThread(&g_entities[clientNum], callback, 1);
+			Scr_FreeThread(threadId);
+        }
 	}
 
 	SV_Cmd_EndTokenizedString( );

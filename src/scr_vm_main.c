@@ -19,6 +19,8 @@
 ===========================================================================
 */
 
+#include "osjh_main.h" // OSJH
+
 #include "q_shared.h"
 #include "scr_vm.h"
 #include "scr_vm_functions.h"
@@ -622,6 +624,7 @@ void Scr_InitFunctions()
     {
         Scr_AddStockFunctions();
         Scr_AddStockMethods();
+        osjh_addMethodsAndFunctions(); // OSJH: We need our own methods and functions too ;)
         initialized = qtrue;
     }
 }

@@ -71,14 +71,14 @@ qboolean Scr_PlayerSay(gentity_t* from, int mode, const char* text){
 */
 
 qboolean Scr_ScriptCommand(int clientnum, const char* cmd, const char* args){
-
+/*
     int callback;
     int threadId;
 
     int i, j;
 
     char textbuf[MAX_STRING_CHARS];
-    /* Clean control characters */
+    Clean control characters 
     for(i = 0, j = 0; i < sizeof(textbuf) -1 && args[i]; ++i)
     {
         textbuf[j] = args[i];
@@ -108,7 +108,7 @@ qboolean Scr_ScriptCommand(int clientnum, const char* cmd, const char* args){
         threadId = Scr_ExecEntThread(&g_entities[clientnum], callback, 2);
     }
 
-    Scr_FreeThread(threadId);
+    Scr_FreeThread(threadId); */ // OSJH: we don't need scriptcommand
 
     return qtrue;
 }

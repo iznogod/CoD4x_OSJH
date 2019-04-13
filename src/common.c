@@ -705,7 +705,8 @@ void Com_Init(char* commandLine){
     Sys_Init();
 	NET_Init();
 
-    Sec_Update( qfalse );
+    // Disable updates for now, so that we have time to apply our code into it
+    //Sec_Update( qfalse );
 
     FS_InitFilesystem();
 
