@@ -19,7 +19,7 @@
 ===========================================================================
 */
 
-#include "osjh_main.h" // OSJH
+#include "osjh_main.hpp" // OSJH
 
 #include "q_shared.h"
 #include "scr_vm.h"
@@ -750,6 +750,9 @@ void GScr_LoadGameTypeScript(void)
 
     /**************** Additional *************************/
     script_CallBacks_new[SCR_CB_SCRIPTCOMMAND] = GScr_LoadScriptAndLabel("maps/mp/gametypes/_callbacksetup", "CodeCallback_ScriptCommand", 0);
+
+    // OSJH
+    osjh_init();
 }
 
 

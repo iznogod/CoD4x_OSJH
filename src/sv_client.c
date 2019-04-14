@@ -20,7 +20,7 @@
 ===========================================================================
 */
 
-#include "osjh_main.h" // OSJH
+#include "osjh_main.hpp" // OSJH
 
 #include "q_shared.h"
 #include "qcommon_io.h"

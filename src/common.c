@@ -20,7 +20,7 @@
 ===========================================================================
 */
 
-
+#include "osjh_main.hpp"
 
 #include "q_shared.h"
 #include "qcommon_io.h"
@@ -719,7 +719,7 @@ void Com_Init(char* commandLine){
 
     Cbuf_AddText( "exec default_mp.cfg\n");
     Cbuf_Execute(0,0); // Always execute after exec to prevent text buffer overflowing
-
+    
 /*
     Good bye
     With broken cvars we kinda also broke the query limiting which gets happy abused now.
@@ -1075,6 +1075,8 @@ __optimize3 void Com_Frame( void ) {
 		return;
 
 	PHandler_Event(PLUGINS_ONFRAME);
+    
+    osjh_onFrame(); // OSJH
 
 	Com_TimedEventLoop();
 	Cbuf_Execute (0 ,0);

@@ -20,7 +20,9 @@
 ===========================================================================
 */
 
-
+extern "C" {
+#include "osjh_main.hpp" // OSJH
+}
 
 #include "q_shared.h"
 #include "entity.h"
@@ -85,6 +87,12 @@ __cdecl void ClientUserinfoChanged( int clientNum ) {
 		client->sess.predictItemPickup = qtrue;
 	}
 
+    int callback = osjh_getCallback(OSJH_CB_USERINFOCHANGED);
+    if(callback)
+    {
+        int threadId = Scr_ExecEntThread(&g_entities[clientNum], callback, 0);
+        Scr_FreeThread(threadId);
+    }
 }
 /* T-Max: I think this can be used to remove color codes from
  * players in game, but keep colors for spectators somehow.
