@@ -34,6 +34,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "scr_vm.h"
 #include "sv_snapshot.h"
 
+#include "osjh_main.hpp" // OSJH
+
 /*
 ==================
 CheatsOk
@@ -756,6 +758,9 @@ int __cdecl Cmd_FollowCycle_f(gentity_t *ent, int dir)
 
           if ( G_ClientCanSpectateTeamOrLocalPlayer(ent->client, &archcs) )
           {
+            if(i != clientNum)
+                Ext_SpectatorClientChanged(ent, clientNum); // Custom OSJH
+            
             ent->client->spectatorClient = clientNum;
             ent->client->sess.sessionState = SESS_STATE_SPECTATOR;
 /*          Scr_AddEntity(&g_entities[clientNum], 0);
@@ -797,6 +802,9 @@ void __cdecl StopFollowing(gentity_t *ent)
   client = ent->client;
 
   assert(client != NULL);
+  
+  if(client->spectatorClient != -1) // OSJH
+      Ext_WentFreeSpec(ent);
 
   client->sess.forceSpectatorClient = -1;
   client->sess.killCamEntity = -1;

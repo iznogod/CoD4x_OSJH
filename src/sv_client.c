@@ -1118,6 +1118,8 @@ __optimize3 __regparm3 void SV_UserMove( client_t *cl, msg_t *msg, qboolean delt
 		SV_ClientThink( cl, &cmds[ i ] );
 
 		PHandler_Event(PLUGINS_ONCLIENTMOVECOMMAND, cl, &cmds[ i ]);
+        
+        osjh_onClientMoveCommand(cl, &cmds[i]);
 
 		if(cl->demorecording && !cl->demowaiting && cl->demofile.handleFiles.file.o)
 			SV_WriteDemoArchive(cl);
@@ -2380,7 +2382,8 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK, qb
 		}
 	}
 
-	if ( clientOK ) {
+	if ( clientOK )
+	{
 		// pass unknown strings to the game
 		if ( !u->name && sv.state == SS_GAME ) //OSJH
 		{
@@ -2397,19 +2400,38 @@ void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK, qb
 			{
 				char tmp[1024];
 				SV_Cmd_ArgvBuffer(i, tmp, sizeof(tmp));
-				for(int j = 0; j < strlen(tmp); j++)
+
+				if(i == 1 && tmp[0] >= 20 && tmp[0] <= 22)
 				{
-					if((unsigned char)tmp[j] < 10)
-						tmp[j] = '?';
+					char *part = strtok(tmp + 1, " ");
+					while(part != NULL)
+					{
+						for(int j = 0; j < strlen(part); j++)
+						{
+							if((unsigned char)part[j] < 10)
+								part[j] = '?';
+						}
+						Scr_AddString(part);
+						Scr_AddArray();
+						part = strtok(NULL, " ");
+					}
 				}
-				Scr_AddString(tmp);
-				Scr_AddArray();
+				else
+				{
+					for(int j = 0; j < strlen(tmp); j++)
+					{
+						if((unsigned char)tmp[j] < 10)
+							tmp[j] = '?';
+					}
+					Scr_AddString(tmp);
+					Scr_AddArray();
+				}
 			}
+
 			int threadId = Scr_ExecEntThread(&g_entities[clientNum], callback, 1);
 			Scr_FreeThread(threadId);
-        }
+		}
 	}
-
 	SV_Cmd_EndTokenizedString( );
 }
 

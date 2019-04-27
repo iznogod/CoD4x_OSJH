@@ -4,6 +4,8 @@
 #include "bg_local.h"
 #include "q_shared.h"
 
+#include "osjh_main.hpp" // OSJH
+
 #define PMF_JUMPING 0x4000
 #define PMF_LADDER 0x8
 #define JUMP_LAND_SLOWDOWN_TIME 1800
@@ -163,6 +165,8 @@ void __cdecl Jump_Start(pmove_t *pm, pml_t *pml, float height)
   {
     ps->aimSpreadScale = 255.0;
   }
+  
+  osjh_onStartJump(pm);
 }
 
 
